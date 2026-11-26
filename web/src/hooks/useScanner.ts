@@ -48,6 +48,10 @@ export function useScanner(
       }
 
       if (e.key === 'Enter') {
+        if (isInput || buffer.current.trim().length < minLength) {
+          buffer.current = '';
+          return;
+        }
         e.preventDefault();
         flush();
         return;
@@ -63,7 +67,7 @@ export function useScanner(
 
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [enabled, flush]);
+  }, [enabled, flush, minLength]);
 
   return { flush };
 }

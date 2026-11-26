@@ -1,0 +1,6 @@
+node_modules
+/data/session-state.json
+/data/session-state.json.*.tmp
+/server/dist/
+/web/dist/
+*.tsbuildinfo

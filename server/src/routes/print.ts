@@ -1,21 +1,64 @@
 import type { FastifyInstance } from 'fastify';
-import { getState, addAudit } from '../services/store.js';
+import { getState, addAudit, saveSessionChange } from '../services/store.js';
 import { makeId } from '../utils/id.js';
 import type { PrintJob } from '../types/index.js';
+
+function recordPrint(type: PrintJob['type'], entityId: string, source: 'paper' | 'demo' = 'demo') {
+  const state = getState();
+  const evidence = { source, at: new Date().toISOString() };
+  if (type === 'label') {
+    const container = state.containers[entityId];
+    container.labelPrinted = true;
+    if (source === 'paper' || container.labelPrintEvidence?.source !== 'paper') container.labelPrintEvidence = evidence;
+  } else {
+    const waybill = state.waybills[entityId];
+    if (waybill.status !== 'ready_for_dispatch' && waybill.status !== 'handed_over') waybill.status = 'printed';
+    waybill.printedAt = evidence.at;
+    if (source === 'paper' || waybill.printEvidence?.source !== 'paper') waybill.printEvidence = evidence;
+  }
+  addAudit({ entityType: type === 'label' ? 'container' : 'waybill', entityId, action: source === 'paper' ? 'paper_print_confirmed' : 'printed' });
+}
 
 export async function printRoutes(app: FastifyInstance) {
   app.get('/api/print/jobs', async () => {
     return { items: getState().printJobs };
   });
 
+  app.post<{ Body: { type?: unknown; entityId?: unknown } }>('/api/print/confirm-paper', async (req, reply) => {
+    const { type, entityId } = req.body ?? {};
+    if ((type !== 'label' && type !== 'waybill') || typeof entityId !== 'string' || !entityId) {
+      return reply.code(400).send({ code: 'BAD_REQUEST', message: 'Укажите документ для подтверждения.' });
+    }
+    const state = getState();
+    const entity = type === 'label' ? state.containers[entityId] : state.waybills[entityId];
+    if (!entity) return reply.code(404).send({ code: 'NOT_FOUND', message: 'Документ не найден.' });
+    if (type === 'waybill' && state.waybills[entityId].status === 'cancelled') {
+      return reply.code(409).send({ code: 'WAYBILL_CANCELLED', message: 'Накладная аннулирована.' });
+    }
+    if (type === 'label' && state.containers[entityId].status !== 'closed') {
+      return reply.code(409).send({ code: 'CONTAINER_OPEN', message: 'Закройте ёмкость перед подтверждением ярлыка.' });
+    }
+    recordPrint(type, entityId, 'paper');
+    saveSessionChange();
+    return { ok: true };
+  });
+
   app.post<{ Body: { type: 'label' | 'waybill'; entityId: string } }>(
     '/api/print/jobs',
     async (req, reply) => {
       const { type, entityId } = req.body || ({} as any);
-      if (!type || !entityId) {
+      if ((type !== 'label' && type !== 'waybill') || typeof entityId !== 'string' || !entityId) {
         return reply.code(400).send({ code: 'BAD_REQUEST', message: 'type и entityId обязательны' });
       }
       const state = getState();
+      const entity = type === 'label' ? state.containers[entityId] : state.waybills[entityId];
+      if (!entity) return reply.code(404).send({ code: 'NOT_FOUND', message: 'Документ не найден.' });
+      if (type === 'waybill' && state.waybills[entityId].status === 'cancelled') {
+        return reply.code(409).send({ code: 'WAYBILL_CANCELLED', message: 'Накладная аннулирована.' });
+      }
+      if (type === 'label' && state.containers[entityId].status !== 'closed') {
+        return reply.code(409).send({ code: 'CONTAINER_OPEN', message: 'Закройте ёмкость перед печатью ярлыка.' });
+      }
       const job: PrintJob = {
         id: makeId('print'),
         type,
@@ -30,6 +73,7 @@ export async function printRoutes(app: FastifyInstance) {
         job.errorMessage = 'Принтер недоступен (демо-режим). Проверьте подключение или смените принтер.';
         job.finishedAt = new Date().toISOString();
         state.printJobs.unshift(job);
+        saveSessionChange();
         return reply.code(503).send({
           ok: false,
           job,
@@ -44,22 +88,8 @@ export async function printRoutes(app: FastifyInstance) {
       job.finishedAt = new Date().toISOString();
       state.printJobs.unshift(job);
 
-      if (type === 'label') {
-        const c = state.containers[entityId];
-        if (c) c.labelPrinted = true;
-      } else if (type === 'waybill') {
-        const w = state.waybills[entityId];
-        if (w) {
-          w.status = 'printed';
-          w.printedAt = new Date().toISOString();
-        }
-      }
-
-      addAudit({
-        entityType: type === 'label' ? 'container' : 'waybill',
-        entityId,
-        action: 'printed',
-      });
+      recordPrint(type, entityId);
+      saveSessionChange();
 
       return { ok: true, job };
     }
@@ -69,11 +99,21 @@ export async function printRoutes(app: FastifyInstance) {
     const state = getState();
     const job = state.printJobs.find((j) => j.id === req.params.id);
     if (!job) return reply.code(404).send({ code: 'NOT_FOUND', message: 'Задание не найдено' });
+    if (job.type === 'label' && state.containers[job.entityId]?.status !== 'closed') {
+      return reply.code(409).send({ code: 'CONTAINER_OPEN', message: 'Закройте ёмкость перед повтором печати.' });
+    }
+    if (job.type === 'waybill' && !state.waybills[job.entityId]) {
+      return reply.code(404).send({ code: 'NOT_FOUND', message: 'Накладная не найдена.' });
+    }
+    if (job.type === 'waybill' && state.waybills[job.entityId].status === 'cancelled') {
+      return reply.code(409).send({ code: 'WAYBILL_CANCELLED', message: 'Накладная аннулирована.' });
+    }
 
     if (state.demoFlags.printerError) {
       job.retries += 1;
       job.status = 'error';
       job.errorMessage = 'Принтер по-прежнему недоступен (демо).';
+      saveSessionChange();
       return reply.code(503).send({
         ok: false,
         job,
@@ -88,16 +128,8 @@ export async function printRoutes(app: FastifyInstance) {
     job.retries += 1;
     job.errorMessage = undefined;
 
-    if (job.type === 'label') {
-      const c = state.containers[job.entityId];
-      if (c) c.labelPrinted = true;
-    } else {
-      const w = state.waybills[job.entityId];
-      if (w) {
-        w.status = 'printed';
-        w.printedAt = new Date().toISOString();
-      }
-    }
+    recordPrint(job.type, job.entityId);
+    saveSessionChange();
     return { ok: true, job };
   });
 }

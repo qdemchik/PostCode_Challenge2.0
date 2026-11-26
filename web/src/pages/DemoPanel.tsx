@@ -4,6 +4,7 @@ import { useSession } from '../stores/session';
 
 export default function DemoPanel() {
   const [flags, setFlags] = useState({ printerError: false, sourceDown: false });
+  const [busy, setBusy] = useState(false);
   const showToast = useSession((s) => s.showToast);
   const refreshStats = useSession((s) => s.refreshStats);
   const refreshContainers = useSession((s) => s.refreshContainers);
@@ -13,21 +14,33 @@ export default function DemoPanel() {
   }, []);
 
   const toggle = async (key: 'printerError' | 'sourceDown') => {
-    const next = { ...flags, [key]: !flags[key] };
-    const res = await api.toggleError(next);
-    setFlags(res);
-    showToast({ type: 'info', title: 'Демо-флаг изменён', message: JSON.stringify(res) });
+    setBusy(true);
+    try {
+      setFlags(await api.toggleError({ [key]: !flags[key] }));
+    } catch (error) {
+      showToast({ type: 'error', title: 'Не удалось изменить настройку', message: error instanceof Error ? error.message : undefined });
+    } finally {
+      setBusy(false);
+    }
   };
 
   const reset = async () => {
-    const res = await api.reset();
-    showToast({
-      type: 'success',
-      title: 'Сессия сброшена',
-      message: `Отправлений: ${res.shipments}, pre-assign: ${res.preAssign?.containersCreated} ёмкостей`,
-    });
-    await refreshStats();
-    await refreshContainers();
+    if (!window.confirm('Сбросить рабочую сессию? Собранные ёмкости, документы и история печати будут удалены.')) return;
+    setBusy(true);
+    try {
+      const res = await api.reset();
+      setFlags({ printerError: false, sourceDown: false });
+      showToast({
+        type: 'success',
+        title: 'Сессия сброшена',
+        message: `Загружено отправлений: ${res.shipments}`,
+      });
+      await Promise.all([refreshStats(), refreshContainers()]);
+    } catch (error) {
+      showToast({ type: 'error', title: 'Не удалось сбросить сессию', message: error instanceof Error ? error.message : undefined });
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -43,6 +56,7 @@ export default function DemoPanel() {
               <input
                 type="checkbox"
                 checked={flags.printerError}
+                disabled={busy}
                 onChange={() => toggle('printerError')}
               />
               Принтер недоступен
@@ -51,6 +65,7 @@ export default function DemoPanel() {
               <input
                 type="checkbox"
                 checked={flags.sourceDown}
+                disabled={busy}
                 onChange={() => toggle('sourceDown')}
               />
               Источник данных недоступен
@@ -59,7 +74,7 @@ export default function DemoPanel() {
         </div>
         <div className="card">
           <div className="card-title">Данные</div>
-          <button className="btn btn-danger" onClick={reset}>
+          <button className="btn btn-danger" disabled={busy} onClick={reset}>
             Сбросить сессию + pre-assign
           </button>
           <p className="muted" style={{ marginTop: 12, fontSize: 13 }}>

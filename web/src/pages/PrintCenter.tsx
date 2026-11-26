@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../api/client';
 import { useSession } from '../stores/session';
 
@@ -18,7 +19,7 @@ export default function PrintCenter() {
   const retry = async (id: string) => {
     try {
       await api.retryPrint(id);
-      showToast({ type: 'success', title: 'Повтор печати успешен' });
+      showToast({ type: 'success', title: 'Демо-задание выполнено' });
       await load();
     } catch (e: any) {
       showToast({ type: 'error', title: 'Снова ошибка', message: e.message, hint: e.actionHint });
@@ -50,9 +51,10 @@ export default function PrintCenter() {
             {jobs.map((j) => (
               <tr key={j.id}>
                 <td className="mono">{j.id}</td>
-                <td>{j.type}</td>
+                <td>{j.type === 'label' ? 'Ярлык' : 'Накладная ф.23а'}</td>
                 <td className="mono">{j.entityId}</td>
                 <td>
+                  <Link className="btn btn-ghost" to={`/print/${j.type}/${j.entityId}`}>Открыть документ</Link>
                   <span
                     className={`badge badge-${
                       j.status === 'done' ? 'success' : j.status === 'error' ? 'error' : 'accent'

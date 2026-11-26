@@ -1,0 +1,33 @@
+.paper-document {
+  width: min(100%, 210mm);
+  margin-inline: auto;
+  padding: clamp(16px, 4vw, 38px);
+  background: white;
+  color: #151515;
+  overflow-wrap: anywhere;
+}
+
+.paper-label { width: min(100%, 130mm); }
+.paper-document h1 { margin: 0 0 12px; font-size: 21px; }
+.label-direction { font-size: 25px; font-weight: 700; }
+.document-number { font-family: var(--font-mono); }
+.document-details { display: grid; grid-template-columns: auto 1fr; gap: 5px 16px; }
+.document-details dd { margin: 0; font-weight: 600; }
+.document-barcode { display: block; max-width: 100%; height: auto; }
+.paper-document small { display: block; margin-top: 16px; }
+.document-table { overflow-x: auto; }
+.document-table table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.document-table :is(th, td) { padding: 6px; border: 1px solid #777; text-align: left; }
+
+@media print {
+  @page { margin: 12mm; }
+  html, body { background: white !important; }
+  .app-shell:has(.document-preview) { display: block; min-height: auto; }
+  .app-shell:has(.document-preview) :is(.app-header, .app-footer, .toast, .print-controls, .trip-picker) { display: none; }
+  .app-shell:has(.document-preview) .app-main { width: auto; max-width: none; margin: 0; padding: 0; }
+  .document-preview .paper-document { width: 100%; margin: 0; padding: 0; }
+  .document-preview .paper-label { max-width: 100mm; break-inside: avoid; }
+  .document-preview .document-table { overflow: visible; }
+  .document-table thead { display: table-header-group; }
+  .document-table tr { break-inside: avoid; }
+}

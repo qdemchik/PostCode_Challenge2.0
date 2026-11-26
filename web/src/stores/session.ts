@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { api } from '../api/client';
+import { api, currentTripId } from '../api/client';
 
 interface Toast {
   id: number;
@@ -20,6 +20,7 @@ interface SessionStore {
   refreshContainers: () => Promise<void>;
   showToast: (t: Omit<Toast, 'id'>) => void;
   clearToast: () => void;
+  clearTripView: () => void;
   setLastShipment: (s: any | null) => void;
   setLastAssign: (a: any | null) => void;
 }
@@ -35,18 +36,20 @@ export const useSession = create<SessionStore>((set, get) => ({
   loading: false,
 
   refreshStats: async () => {
+    const trip = currentTripId();
     try {
       const stats = await api.stats();
-      set({ stats });
+      if (trip === currentTripId()) set({ stats });
     } catch {
       /* ignore */
     }
   },
 
   refreshContainers: async () => {
+    const trip = currentTripId();
     try {
       const res = await api.containers();
-      set({ containers: res.items });
+      if (trip === currentTripId()) set({ containers: res.items });
     } catch {
       /* ignore */
     }
@@ -61,6 +64,7 @@ export const useSession = create<SessionStore>((set, get) => ({
   },
 
   clearToast: () => set({ toast: null }),
+  clearTripView: () => set({ stats: null, containers: [], lastShipment: null, lastAssign: null }),
   setLastShipment: (s) => set({ lastShipment: s }),
   setLastAssign: (a) => set({ lastAssign: a }),
 }));

@@ -10,7 +10,8 @@ export type ShipmentStatus =
   | 'error';
 
 export type ContainerStatus = 'open' | 'closed';
-export type DocumentStatus = 'formed' | 'printed' | 'ready_for_dispatch' | 'error';
+export type DocumentStatus = 'formed' | 'printed' | 'ready_for_dispatch' | 'handed_over' | 'cancelled' | 'error';
+export type PrintEvidence = { source: 'paper' | 'demo'; at: string };
 
 export type ContainerKind =
   | 'группа РПО'
@@ -35,6 +36,7 @@ export type ContainerCategory =
 
 export interface Shipment {
   id: string;
+  plannedTripId?: string;
   barcode: string;
   kind: string;
   kindNormalized: string;
@@ -50,9 +52,16 @@ export interface Shipment {
   address: string;
   city: string;
   countryCode: string;
+  mailRank?: string;
   acceptedAt: string;
   storageExpiresAt: string;
   isEligibleForDispatch: boolean;
+  routingIssue?: 'ROUTE_NOT_FOUND' | 'ROUTE_AMBIGUOUS';
+  routingDetails?: {
+    rank: string;
+    countryCode: string;
+    candidates: { containerDirection: string; waybillDirection: string }[];
+  };
   directionContainer: string;
   directionWaybill: string;
   preAssignedContainerId: string | null;
@@ -68,6 +77,7 @@ export interface Shipment {
 
 export interface Container {
   id: string;
+  tripId?: string;
   directionId: string;
   waybillDirectionId: string;
   category: ContainerCategory;
@@ -82,6 +92,7 @@ export interface Container {
   marks: string[];
   status: ContainerStatus;
   labelPrinted: boolean;
+  labelPrintEvidence?: PrintEvidence;
   createdAt: string;
   closedAt?: string;
   opsIndex: string;
@@ -90,11 +101,18 @@ export interface Container {
 
 export interface Waybill {
   id: string;
+  tripId?: string;
   directionId: string;
+  directionIds?: string[];
   containerIds: string[];
   status: DocumentStatus;
   createdAt: string;
   printedAt?: string;
+  printEvidence?: PrintEvidence;
+  readyAt?: string;
+  handover?: { at: string; containerIds: string[] };
+  cancellation?: { at: string; reason: string; containers: Container[] };
+  replacesWaybillIds?: string[];
   opsIndex: string;
   totalContainers: number;
   totalShipments: number;
@@ -149,14 +167,54 @@ export interface AssignResult {
   actionHint?: string;
 }
 
+export const reviewReasons = ['NOT_FOUND', 'SOURCE_DOWN', 'ROUTE_NOT_FOUND', 'ROUTE_AMBIGUOUS', 'OVERWEIGHT', 'NOT_ELIGIBLE'] as const;
+export type ReviewReason = typeof reviewReasons[number];
+
+export interface ReviewItem {
+  barcode: string;
+  reason: ReviewReason;
+  deferredAt: string;
+  resolvedAt?: string;
+  resolution?: 'assigned' | 'dismissed';
+}
+
+export interface DispatchSummary {
+  waitingBarcodes: string[];
+  reviewCounts: Partial<Record<ReviewReason, number>>;
+  openContainerIds: string[];
+  unprintedLabelIds: string[];
+  undocumentedContainerIds: string[];
+  unprintedWaybillIds: string[];
+  unconfirmedWaybillIds: string[];
+  tripPlan?: TripPlan;
+}
+
+export interface TripPlan {
+  items: {
+    barcode: string;
+    kind: string;
+    status: 'waiting' | 'review' | 'unavailable' | 'packed';
+    containerId?: string;
+  }[];
+  outsidePlanBarcodes: string[];
+}
+
 export interface SessionState {
+  trips: Record<string, DispatchTrip>;
   shipments: Record<string, Shipment>;
   containers: Record<string, Container>;
   waybills: Record<string, Waybill>;
   printJobs: PrintJob[];
   audit: AuditEntry[];
+  reviewQueue: Record<string, ReviewItem>;
   demoFlags: {
     printerError: boolean;
     sourceDown: boolean;
   };
+}
+
+export interface DispatchTrip {
+  id: string;
+  name: string;
+  createdAt: string;
 }

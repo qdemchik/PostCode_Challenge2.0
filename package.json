@@ -10,6 +10,7 @@
     "build": "npm run build -w server && npm run build -w web",
     "start": "npm run start -w server",
     "test": "npm run test -w server && npm run test -w web",
+    "test:browser": "node scripts/browser-smoke.mjs",
     "import-data": "tsx data/import.ts"
   },
   "workspaces": [
