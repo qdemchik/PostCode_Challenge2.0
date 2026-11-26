@@ -1,0 +1,9 @@
+{
+  "name": "Исходящая почта · макеты ОПС",
+  "id": "1140002611260001",
+  "api": "1.0.0",
+  "editorType": ["figma"],
+  "main": "code.js",
+  "documentAccess": "dynamic-page",
+  "networkAccess": { "allowedDomains": ["none"] }
+}

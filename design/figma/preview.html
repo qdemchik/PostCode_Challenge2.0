@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Исходящая почта · макеты ОПС</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #0a101b; color: #f1f5fc; font: 15px Inter, "Segoe UI", Arial, sans-serif; }
+    header { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; padding: 16px 18px; }
+    header label { display: flex; align-items: center; gap: 10px; color: #b3c1d7; }
+    select { font: inherit; color: inherit; background: #19263a; border: 1px solid #344560; border-radius: 8px; padding: 8px; }
+    main { position: relative; margin: 0 18px 18px; overflow: hidden; }
+    #canvas { width: 1440px; height: 900px; position: relative; background: #101827; transform-origin: top left; }
+    .layer { position: absolute; }
+    .text { line-height: 1.2; pointer-events: none; }
+    .icon { pointer-events: none; }
+    button.shape { padding: 0; border: 0; cursor: pointer; }
+    button.shape:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>Исходящая почта · просмотр макетов</strong>
+    <label>Экран <select id="screen"></select></label>
+  </header>
+  <main><div id="canvas" aria-label="Макет интерфейса оператора"></div></main>
+  <script src="code.js"></script>
+</body>
+</html>
