@@ -1,0 +1,3346 @@
+{
+  "directions": [
+    {
+      "id": "108979",
+      "name": "Направление 108979",
+      "waybillDirection": "108970"
+    },
+    {
+      "id": "101761",
+      "name": "Направление 101761",
+      "waybillDirection": "108970"
+    },
+    {
+      "id": "130211",
+      "name": "Направление 130211",
+      "waybillDirection": "130211"
+    },
+    {
+      "id": "108986",
+      "name": "Направление 108986",
+      "waybillDirection": "108970"
+    },
+    {
+      "id": "108993",
+      "name": "Направление 108993",
+      "waybillDirection": "108970"
+    },
+    {
+      "id": "108980",
+      "name": "Направление 108980",
+      "waybillDirection": "108970"
+    },
+    {
+      "id": "140984",
+      "name": "Направление 140984",
+      "waybillDirection": "108970"
+    },
+    {
+      "id": "117990",
+      "name": "Направление 117990",
+      "waybillDirection": "108970"
+    },
+    {
+      "id": "140986",
+      "name": "Направление 140986",
+      "waybillDirection": "108970"
+    },
+    {
+      "id": "140981",
+      "name": "Направление 140981",
+      "waybillDirection": "108970"
+    },
+    {
+      "id": "140970",
+      "name": "Направление 140970",
+      "waybillDirection": "108970"
+    },
+    {
+      "id": "130196",
+      "name": "Направление 130196",
+      "waybillDirection": "130209"
+    },
+    {
+      "id": "142807",
+      "name": "Направление 142807",
+      "waybillDirection": "142807"
+    },
+    {
+      "id": "142707",
+      "name": "Направление 142707",
+      "waybillDirection": "130209"
+    },
+    {
+      "id": "130197",
+      "name": "Направление 130197",
+      "waybillDirection": "130209"
+    },
+    {
+      "id": "130209",
+      "name": "Направление 130209",
+      "waybillDirection": "130209"
+    },
+    {
+      "id": "143193",
+      "name": "Направление 143193",
+      "waybillDirection": "143193"
+    },
+    {
+      "id": "143192",
+      "name": "Направление 143192",
+      "waybillDirection": "143192"
+    },
+    {
+      "id": "141003",
+      "name": "Направление 141003",
+      "waybillDirection": "141003"
+    },
+    {
+      "id": "130198",
+      "name": "Направление 130198",
+      "waybillDirection": "130209"
+    },
+    {
+      "id": "108970",
+      "name": "Направление 108970",
+      "waybillDirection": "108970"
+    },
+    {
+      "id": "102960",
+      "name": "Направление 102960",
+      "waybillDirection": "102960"
+    },
+    {
+      "id": "102962",
+      "name": "Направление 102962",
+      "waybillDirection": "108970"
+    },
+    {
+      "id": "102991",
+      "name": "Направление 102991",
+      "waybillDirection": "130211"
+    },
+    {
+      "id": "130982",
+      "name": "Направление 130982",
+      "waybillDirection": "130211"
+    },
+    {
+      "id": "130199",
+      "name": "Направление 130199",
+      "waybillDirection": "130211"
+    },
+    {
+      "id": "102021",
+      "name": "Направление 102021",
+      "waybillDirection": "108970"
+    },
+    {
+      "id": "102905",
+      "name": "Направление 102905",
+      "waybillDirection": "102905"
+    }
+  ],
+  "rules": [
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS оптимальное",
+      "category": "Обыкновенное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "108979",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS оптимальное",
+      "category": "Обыкновенное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS оптимальное",
+      "category": "Обыкновенное",
+      "method": "Стандарт",
+      "directionContainer": "108979",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS оптимальное",
+      "category": "Обыкновенное",
+      "method": "Стандарт",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS оптимальное",
+      "category": "С объявленной ценностью",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "108979",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS оптимальное",
+      "category": "С объявленной ценностью",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS оптимальное",
+      "category": "С объявленной ценностью",
+      "method": "Стандарт",
+      "directionContainer": "108979",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS оптимальное",
+      "category": "С объявленной ценностью",
+      "method": "Стандарт",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS оптимальное",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "108979",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS оптимальное",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS оптимальное",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Стандарт",
+      "directionContainer": "108979",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS оптимальное",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Стандарт",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS РТ",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS РТ",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "108986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS РТ",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS РТ",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "108986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS РТ",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS РТ",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS Тендер",
+      "category": "Обыкновенное",
+      "method": "Авиа",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS Тендер",
+      "category": "Обыкновенное",
+      "method": "Авиа",
+      "directionContainer": "108986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS Тендер",
+      "category": "Обыкновенное",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS Тендер",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "108986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS Тендер",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS Тендер",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS Тендер",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS Тендер",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "108986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "EMS Тендер",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "140986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "140986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "Простое",
+      "method": "Наземный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "Простое",
+      "method": "Наземный",
+      "directionContainer": "140981",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "Простое",
+      "method": "Наземный",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "Простое",
+      "method": "Наземный",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "Простое",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "Простое",
+      "method": "Наземный",
+      "directionContainer": "140986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью",
+      "method": "Комбинированный",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью",
+      "method": "Комбинированный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью",
+      "method": "Комбинированный",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью",
+      "method": "Комбинированный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью",
+      "method": "Комбинированный",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "140986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью",
+      "method": "Комбинированный",
+      "directionContainer": "140986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "140986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Комбинированный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Комбинированный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Комбинированный",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Комбинированный",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Комбинированный",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Наземный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Наземный",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Наземный",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Наземный",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "Заказное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "Заказное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "Заказное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "С объявленной ценностью",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "С объявленной ценностью",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "С объявленной ценностью",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Наземный",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Наземный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль 1-го класса",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль-комплект",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль-комплект",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль-комплект",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль-комплект",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бандероль-комплект",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "130196",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "142807",
+      "directionWaybill": "142807"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "108986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "142707",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "130197",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "130209",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "143193",
+      "directionWaybill": "143193"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "143192",
+      "directionWaybill": "143192"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "141003",
+      "directionWaybill": "141003"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "130198",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "130197",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "143192",
+      "directionWaybill": "143192"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "130196",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "141003",
+      "directionWaybill": "141003"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "130198",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "108986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "143193",
+      "directionWaybill": "143193"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "142807",
+      "directionWaybill": "142807"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "142707",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "130209",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер экспресс",
+      "category": "Обыкновенное",
+      "method": "Авиа",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер экспресс",
+      "category": "Обыкновенное",
+      "method": "Авиа",
+      "directionContainer": "108986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер экспресс",
+      "category": "Обыкновенное",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер экспресс",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер экспресс",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "108986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бизнес курьер экспресс",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бланк уведомления",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бланк уведомления",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бланк уведомления",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бланк уведомления",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бланк уведомления",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бланк уведомления 1 класса",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бланк уведомления 1 класса",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бланк уведомления 1 класса",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бланк уведомления 1 класса",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бланк уведомления 1 класса",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бланк уведомления 1 класса",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бланк уведомления 1 класса",
+      "category": "Заказное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бланк уведомления 1 класса",
+      "category": "Заказное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Бланк уведомления 1 класса",
+      "category": "Заказное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ВГПО 1-го класса",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ВГПО 1-го класса",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ВГПО 1-го класса",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ВГПО 1-го класса",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ВГПО 1-го класса",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ВГПО 1-го класса",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ВГПО 1-го класса",
+      "category": "Заказное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ВГПО 1-го класса",
+      "category": "Заказное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ВГПО 1-го класса",
+      "category": "Заказное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Газетная пачка",
+      "category": "Не определена",
+      "method": "Авиа",
+      "directionContainer": "108970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Газетная пачка",
+      "category": "Не определена",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Газетная пачка",
+      "category": "Не определена",
+      "method": "Наземный",
+      "directionContainer": "108970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Газетная пачка",
+      "category": "Не определена",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Газетная пачка",
+      "category": "Простое",
+      "method": "Авиа",
+      "directionContainer": "108970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Газетная пачка",
+      "category": "Простое",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Газетная пачка",
+      "category": "Простое",
+      "method": "Наземный",
+      "directionContainer": "108970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Газетная пачка",
+      "category": "Простое",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Гипергруз",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "108970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Гипергруз",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Гипергруз",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "108970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Гипергруз",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Гипергруз",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "108970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Гипергруз",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ГКО",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "108970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ГКО",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ГКО",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "108970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ГКО",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ЕКОМ",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "108979",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ЕКОМ",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ЕКОМ",
+      "category": "С обязательным платежом",
+      "method": "Наземный",
+      "directionContainer": "108979",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ЕКОМ",
+      "category": "С обязательным платежом",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ЕКОМ Маркетплейс",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "108979",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ЕКОМ Маркетплейс",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ЕКОМ Маркетплейс",
+      "category": "С объявленной ценностью",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "108979",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ЕКОМ Маркетплейс",
+      "category": "С объявленной ценностью",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "КПО-стандарт",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "108970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "КПО-стандарт",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "КПО-стандарт",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "108970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "КПО-стандарт",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "КПО-эконом",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "108970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "КПО-эконом",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "КПО-эконом",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "108970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "КПО-эконом",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Курьер онлайн",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "108979",
+      "directionWaybill": "108979"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Курьер онлайн",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Курьер онлайн",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Курьер онлайн",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Курьер онлайн",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "108979",
+      "directionWaybill": "108979"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Курьер онлайн",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Курьер онлайн",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Наземный",
+      "directionContainer": "108979",
+      "directionWaybill": "108979"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Курьер онлайн",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Наземный",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Курьер онлайн",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Курьер онлайн плюс",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "108979",
+      "directionWaybill": "108979"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Курьер онлайн плюс",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Курьер онлайн плюс",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Курьер онлайн плюс",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "108979",
+      "directionWaybill": "108979"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Курьер онлайн плюс",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Курьер онлайн плюс",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Курьер онлайн плюс",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Наземный",
+      "directionContainer": "108979",
+      "directionWaybill": "108979"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Курьер онлайн плюс",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Наземный",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Курьер онлайн плюс",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ОВПО – карточка",
+      "category": "Простое",
+      "method": "Наземный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ОВПО – карточка",
+      "category": "Простое",
+      "method": "Наземный",
+      "directionContainer": "140981",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ОВПО – карточка",
+      "category": "Простое",
+      "method": "Наземный",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ОВПО – карточка",
+      "category": "Простое",
+      "method": "Наземный",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ОВПО – карточка",
+      "category": "Простое",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ОВПО – письмо",
+      "category": "Простое",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ОВПО – письмо",
+      "category": "Простое",
+      "method": "Наземный",
+      "directionContainer": "140981",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ОВПО – письмо",
+      "category": "Простое",
+      "method": "Наземный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ОВПО – письмо",
+      "category": "Простое",
+      "method": "Наземный",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "ОВПО – письмо",
+      "category": "Простое",
+      "method": "Наземный",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Авиа",
+      "directionContainer": "141003",
+      "directionWaybill": "141003"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Авиа",
+      "directionContainer": "130196",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Авиа",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Авиа",
+      "directionContainer": "130198",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Авиа",
+      "directionContainer": "130197",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Авиа",
+      "directionContainer": "143192",
+      "directionWaybill": "143192"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Авиа",
+      "directionContainer": "108986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Авиа",
+      "directionContainer": "130209",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Авиа",
+      "directionContainer": "142707",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Авиа",
+      "directionContainer": "142807",
+      "directionWaybill": "142807"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Авиа",
+      "directionContainer": "143193",
+      "directionWaybill": "143193"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "142707",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "130198",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "108986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "141003",
+      "directionWaybill": "141003"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "130196",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "130197",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "143192",
+      "directionWaybill": "143192"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "130209",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "142807",
+      "directionWaybill": "142807"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "143193",
+      "directionWaybill": "143193"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "108986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "142807",
+      "directionWaybill": "142807"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "143193",
+      "directionWaybill": "143193"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "142707",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "143192",
+      "directionWaybill": "143192"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "130196",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "130197",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "141003",
+      "directionWaybill": "141003"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "130198",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "Обыкновенное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "130209",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "142707",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "130198",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "108986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "141003",
+      "directionWaybill": "141003"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "130196",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "142807",
+      "directionWaybill": "142807"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "143193",
+      "directionWaybill": "143193"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "143192",
+      "directionWaybill": "143192"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "130209",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "130197",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "130197",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "108986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "130209",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "130196",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "143192",
+      "directionWaybill": "143192"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "141003",
+      "directionWaybill": "141003"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "142707",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "130198",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "143193",
+      "directionWaybill": "143193"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "142807",
+      "directionWaybill": "142807"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "108986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "130196",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "130198",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "143192",
+      "directionWaybill": "143192"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "130197",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "141003",
+      "directionWaybill": "141003"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "142707",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "130209",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "142807",
+      "directionWaybill": "142807"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Авиа",
+      "directionContainer": "143193",
+      "directionWaybill": "143193"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "130197",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "130211",
+      "directionWaybill": "130211"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "142707",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "130196",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "141003",
+      "directionWaybill": "141003"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "130209",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "108986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "143192",
+      "directionWaybill": "143192"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "142807",
+      "directionWaybill": "142807"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "143193",
+      "directionWaybill": "143193"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "130198",
+      "directionWaybill": "130209"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление EMS",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление ВСД",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "108979",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Отправление ВСД",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Пакет ДМ",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "108979",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Пакет ДМ",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Пакет ДМ-возврат",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Пакет ДМ-возврат",
+      "category": "Обыкновенное",
+      "method": "Наземный",
+      "directionContainer": "108979",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Комбинированный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Комбинированный",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Комбинированный",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Комбинированный",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Комбинированный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Стандарт",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Стандарт",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Стандарт",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Стандарт",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Стандарт",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Электронный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Электронный",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Электронный",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Электронный",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Электронный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "140986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Комбинированный",
+      "directionContainer": "140986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "140986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "140986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Стандарт",
+      "directionContainer": "140986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "Заказное",
+      "method": "Электронный",
+      "directionContainer": "140986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью",
+      "method": "Комбинированный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью",
+      "method": "Комбинированный",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью",
+      "method": "Комбинированный",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью",
+      "method": "Комбинированный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью",
+      "method": "Комбинированный",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "140986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью",
+      "method": "Комбинированный",
+      "directionContainer": "140986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "140986",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Комбинированный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Комбинированный",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Комбинированный",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Комбинированный",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Комбинированный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Наземный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Наземный",
+      "directionContainer": "108993",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Наземный",
+      "directionContainer": "140984",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо",
+      "category": "С объявленной ценностью и наложенным платежом",
+      "method": "Наземный",
+      "directionContainer": "117990",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "Заказное",
+      "method": "Авиа",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "Заказное",
+      "method": "Комбинированный",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "Заказное",
+      "method": "Комбинированный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "Заказное",
+      "method": "Комбинированный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "Заказное",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "Заказное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "Заказное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "Заказное",
+      "method": "Системой ускоренной почты",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "С объявленной ценностью",
+      "method": "Авиа",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "С объявленной ценностью",
+      "method": "Комбинированный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "С объявленной ценностью",
+      "method": "Комбинированный",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "С объявленной ценностью",
+      "method": "Комбинированный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "108980",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "140970",
+      "directionWaybill": "108970"
+    },
+    {
+      "classification": "Внутренняя",
+      "kind": "Письмо 1-го класса",
+      "category": "С объявленной ценностью",
+      "method": "Наземный",
+      "directionContainer": "101761",
+      "directionWaybill": "108970"
+    }
+  ]
+}
