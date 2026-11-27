@@ -1,4 +1,4 @@
-/* Shared screen definitions for the Figma plugin and browser preview. */
+/* Screen definitions for the Figma plugin. */
 const width = 1440;
 const height = 900;
 const palette = {
@@ -99,11 +99,14 @@ function shell(active, title, subtitle, trip = 'Утренний рейс') {
         text(label, 60, y + 11, 14, active === key ? 'text' : 'sub', 'Medium', 140),
       ];
     }),
-    box('Контекст рейса', 224, 0, 1216, 70, 'sidebar', null, 0),
-    line(224, 69, 1216),
-    text('Рабочий рейс', 256, 25, 13, 'sub', 'Medium', 125),
-    ...button(trip + '  ▾', 380, 13, 190, 'plan', 'secondary'),
-    text('Демонстрационная сессия', 1178, 25, 13, 'faint', 'Regular', 220),
+    text('РАБОЧИЙ РЕЙС', 256, 11, 12, 'sub', 'Semi Bold', 150),
+    ...button('Без рейса', 256, 30, 104, 'desk', 'secondary'),
+    box(trip, 368, 30, 176, 44, 'blueSurface', null, 8, 'plan'),
+    text(trip, 382, 42, 14, 'text', 'Medium', 148),
+    ...button('Новый рейс', 1014, 30, 112, undefined, 'secondary'),
+    ...button('Переименовать', 1134, 30, 140, undefined, 'secondary'),
+    ...button('План рейса', 1282, 30, 126, 'plan', 'secondary'),
+    line(256, 86, 1152),
     text(title, 256, 103, 32, 'text', 'Bold', 1120),
     text(subtitle, 256, 154, 15, 'sub', 'Regular', 1120),
   ];
@@ -459,59 +462,10 @@ async function createFigmaScreens() {
   figma.closePlugin('Создано экранов: ' + screens.length + '.');
 }
 
-function preview() {
-  const canvas = document.querySelector('#canvas');
-  const picker = document.querySelector('#screen');
-  for (const screen of screens) picker.add(new Option(screen.name, screen.id));
-  const scale = () => {
-    const factor = Math.min((innerWidth - 36) / width, 1);
-    canvas.style.transform = 'scale(' + factor + ')';
-    canvas.parentElement.style.height = (height * factor) + 'px';
-  };
-  const render = (id) => {
-    const screen = screens.find((item) => item.id === id) ?? screens[0];
-    picker.value = screen.id;
-    canvas.replaceChildren();
-    for (const item of screen.nodes) {
-      const node = document.createElement(item.to ? 'button' : 'div');
-      node.style.left = item.x + 'px';
-      node.style.top = item.y + 'px';
-      if (item.type === 'text') {
-        node.className = 'layer text';
-        node.textContent = item.value;
-        node.style.width = item.w + 'px';
-        node.style.color = palette[item.tone];
-        node.style.fontSize = item.size + 'px';
-        node.style.fontWeight = { Regular: 400, Medium: 500, 'Semi Bold': 600, Bold: 700 }[item.weight];
-      } else if (item.type === 'icon') {
-        node.className = 'layer icon';
-        node.innerHTML = iconSvg(item);
-      } else {
-        node.className = 'layer shape';
-        node.style.width = item.w + 'px';
-        node.style.height = item.h + 'px';
-        node.style.background = palette[item.fill];
-        node.style.borderRadius = item.radius + 'px';
-        if (item.stroke) node.style.border = '1px solid ' + palette[item.stroke];
-        if (item.to) {
-          node.setAttribute('aria-label', item.name);
-          node.addEventListener('click', () => { location.hash = item.to; });
-        }
-      }
-      canvas.append(node);
-    }
-  };
-  picker.addEventListener('change', () => { location.hash = picker.value; });
-  addEventListener('resize', scale);
-  addEventListener('hashchange', () => render(location.hash.slice(1)));
-  scale();
-  render(location.hash.slice(1));
-}
-
 if (typeof figma !== 'undefined') {
   createFigmaScreens().catch((error) => figma.closePlugin('Ошибка создания макетов: ' + error.message));
 } else if (typeof document !== 'undefined') {
-  preview();
+  location.replace('http://localhost:5173/');
 } else {
   module.exports = { width, height, palette, screens };
 }

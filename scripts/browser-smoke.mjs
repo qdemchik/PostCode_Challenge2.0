@@ -1,6 +1,7 @@
 import {spawn} from 'node:child_process';
 import {createServer} from 'node:http';
-import {readFileSync, mkdtempSync, rmSync} from 'node:fs';
+import {readFileSync, writeFileSync, mkdtempSync, rmSync} from 'node:fs';
+import {pathToFileURL} from 'node:url';
 import {tmpdir} from 'node:os';
 import {join, resolve, sep} from 'node:path';
 import {setTimeout as delay} from 'node:timers/promises';
@@ -129,6 +130,7 @@ try{
   return data.items?.[0];
  },'waybill created');
  await click('document.querySelector('+JSON.stringify('a[href="/print/waybill/'+waybill.id+'"]')+')','waybill preview');
+ await wait(() => evaluate('Boolean(document.querySelector(".paper-document"))'), 'waybill rendered');
  await evaluate('window.print=()=>{}');
  await click(button('button','Печать / PDF'),'open waybill print dialog');
  await click(button('button','Подтвердить бумажный экземпляр'),'confirm paper waybill');
@@ -158,6 +160,27 @@ try{
  await wait(()=>evaluate('Array.from(document.querySelectorAll(".badge")).some(e=>e.textContent==="Передано водителю")'),'handover in summary');
  console.log('Browser workflow, paper confirmation, foreign/duplicate scan and handover verified');
 
+ await navigate('/scan');
+ await wait(() => evaluate('Boolean(document.querySelector("#scan"))'), 'scan screen for missing item');
+ await evaluate(`(() => {
+  const input = document.querySelector('#scan');
+  Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, 'IN999999999999');
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+ })()`);
+ await click(button('button', 'Найти отправление'), 'look up unknown identifier');
+ await wait(() => evaluate('Boolean(document.querySelector(".toast.error"))'), 'unknown shipment feedback');
+
+ const post = (path, body) => fetch(base + path, {
+  method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+ });
+ if (!(await post('/api/demo/toggle-error', { printerError: true })).ok) throw Error('Cannot simulate printer failure');
+ try {
+  await post('/api/print/jobs', { type: 'label', entityId: shipment.containerId });
+  await navigate('/print');
+  await wait(() => evaluate('Boolean(' + button('button', 'Повтор') + ')'), 'failed print job with retry');
+ } finally {
+  if (!(await post('/api/demo/toggle-error', { printerError: false })).ok) throw Error('Cannot restore printer');
+ }
  for (const width of [320, 390, 768]) {
   await cdp('Emulation.setDeviceMetricsOverride', { width, height: 844, deviceScaleFactor: 1, mobile: true });
   for (const path of ['/', '/scan', '/containers', '/finish', '/demo', '/search', '/print']) {
@@ -193,7 +216,9 @@ try{
    const cards = [...grid.children].map((card) => card.getBoundingClientRect());
    const near = (a, b) => Math.abs(a - b) < 1;
    const buttons = [...document.querySelectorAll('.page-stack .btn')].map((button) => button.getBoundingClientRect());
-   return buttons.length > 1 && buttons.every((button) => near(button.width, 240) && near(button.height, 48))
+   const actions = [...document.querySelectorAll('.dashboard-actions .btn')].map((button) => button.getBoundingClientRect());
+   return actions.length === 2 && near(actions[0].top, actions[1].top) && actions[0].right < actions[1].left
+     && buttons.length > 1 && buttons.every((button) => near(button.width, 240) && near(button.height, 48))
      && cards.length === 4 && cards.every((card) => near(card.top, cards[0].top))
      && near(cards[0].left, 50) && near(document.documentElement.clientWidth - cards[3].right, 50)
      && cards.slice(1).every((card, index) => near(card.left - cards[index].right, 40))
@@ -295,6 +320,7 @@ try{
  })()`);
  await click(button('form button','Сохранить'), 'save weighed category');
  await click(button('button', 'Взвесить'), 'read demo scale');
+ await wait(() => evaluate('Boolean(' + button('button', 'Принять вес с весов') + ')'), 'scale response');
  await click(button('button', 'Принять вес с весов'), 'accept scale reading');
  await click(button('button', 'Закрыть ёмкость'), 'close weighed container');
  await wait(async () => {
@@ -311,6 +337,58 @@ try{
   item.totalContainers === 1 && item.totalShipments === 1 && !item.containerIds.includes(firstShipment.containerId)
  ), 'waybill counts the outer container only');
  console.log('Demo weighing, container nesting and document quantities verified');
+ if (process.argv.includes('--export-preview')) {
+  await navigate('/');
+  await createTrip('почта');
+  await wait(() => evaluate('Boolean(document.querySelector(".trip-option[aria-pressed=true]"))'), 'selected preview trip');
+  const preview = await evaluate(`(() => {
+   const shell = document.querySelector('.app-shell').cloneNode(true);
+   shell.querySelectorAll('.trip-option:not([aria-pressed=true])').forEach((option) => {
+    if (option.dataset.tripId) option.remove();
+   });
+   return {
+    markup: shell.outerHTML,
+    styles: [...document.querySelectorAll('link[rel=stylesheet]')].map((link) => new URL(link.href).pathname),
+   };
+  })()`);
+  const pages = {};
+  for (const path of ['/', '/scan', '/review', '/containers', '/finish', '/search', '/print', '/demo', '/trip-plan']) {
+   await navigate(path);
+   await wait(() => evaluate('Boolean(document.querySelector(".trip-option[aria-pressed=true]"))'), 'preview page loaded ' + path);
+   pages[path] = await evaluate(`[...document.querySelector('.app-main').children]
+    .filter((node) => !node.matches('.trip-picker')).map((node) => node.outerHTML).join('')`);
+  }
+  await navigate('/');
+  await wait(() => evaluate('Boolean(document.querySelector(".trip-option[aria-pressed=true]"))'), 'preview dashboard restored');
+  const css = preview.styles.map((path) => readFileSync(resolve(dist, '.' + path), 'utf8')).join('\n');
+  const file = resolve('design/figma/preview.html');
+  const template = readFileSync(file, 'utf8');
+  const html = template
+   .replace(/(<script type="application\/json" id="preview-pages">)[\s\S]*?(<\/script>)/,
+    (_, start, end) => start + JSON.stringify(pages).replaceAll('<', '\\u003c') + end)
+   .replace(/(<!-- app-css:start -->)[\s\S]*?(<!-- app-css:end -->)/, (_, start, end) => start + '\n<style>' + css + '</style>\n' + end)
+   .replace(/(<!-- app-preview:start -->)[\s\S]*?(<!-- app-preview:end -->)/, (_, start, end) => start + '\n' + preview.markup + '\n' + end);
+  if (html === template) throw Error('Preview could not be updated');
+  writeFileSync(file, html);
+  const metrics = `JSON.stringify([...document.querySelectorAll('.trip-picker .btn')].map((button) => {
+   const { x, y, width, height } = button.getBoundingClientRect();
+   return [button.textContent.trim(), button.getAttribute('aria-pressed'), x, y, width, height];
+  }))`;
+  const compactTripOptions = `document.querySelectorAll('.trip-option:not([aria-pressed=true])').forEach((option) => {
+   if (option.dataset.tripId) option.remove();
+  })`;
+  await evaluate(compactTripOptions);
+  const expected = await evaluate(metrics);
+  await cdp('Page.navigate', { url: pathToFileURL(file).href + '?offline' });
+  await wait(async () => (await evaluate(metrics)) === expected, 'offline trip panel matches live button geometry');
+  for (const path of Object.keys(pages)) {
+   await evaluate(`location.hash = ${JSON.stringify(path)}`);
+   await wait(() => evaluate(`document.querySelector('.app-header nav a.active')?.getAttribute('href') === ${JSON.stringify(path)}
+    || (${JSON.stringify(path)} === '/trip-plan' && document.querySelector('.app-main').children.length > 1)`), 'offline tab ' + path);
+   await wait(async () => (await evaluate(metrics)) === expected, 'trip panel fixed on ' + path);
+  }
+  console.log('Offline trip panel matches live button labels, selection and geometry');
+ }
 }finally{
  ws?.close();edge?.kill();child.kill();http.close();
  http.closeAllConnections(); await delay(750);

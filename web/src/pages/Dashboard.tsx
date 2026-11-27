@@ -41,7 +41,7 @@ export default function Dashboard() {
             ОПС 114000 · автоматическая сборка ёмкостей по плану направлений
           </p>
         </div>
-        <div className="flex">
+        <div className="dashboard-actions">
           <button className="btn btn-ghost" onClick={runPreAssign} disabled={busy}>
             Pre-assign ёмкости
           </button>
