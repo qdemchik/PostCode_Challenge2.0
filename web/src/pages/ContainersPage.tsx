@@ -178,8 +178,8 @@ export default function ContainersPage() {
   };
 
   return (
-    <div className="stack">
-      <div className="flex-between">
+    <div className="page-stack">
+      <div className="page-heading">
         <h1 style={{ margin: 0, fontSize: 22 }}>Ёмкости</h1>
         <button className="btn btn-ghost" onClick={() => refresh()}>
           Обновить
@@ -187,7 +187,7 @@ export default function ContainersPage() {
       </div>
 
       <div className="grid-2 container-layout">
-        <div className="card" style={{ maxHeight: 520, overflow: 'auto' }}>
+        <div className="card table-scroll container-list">
           <table className="table">
             <thead>
               <tr>
@@ -202,7 +202,7 @@ export default function ContainersPage() {
               {containers.map((c) => (
                 <tr
                   key={c.id}
-                  style={{ background: detail?.id === c.id ? 'var(--accent-muted)' : undefined }}
+                  className={detail?.id === c.id ? 'selected-row' : undefined}
                 >
                   <td>
                     <button className="btn btn-ghost mono" disabled={busy || editing || !!removing} onClick={() => {

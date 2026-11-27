@@ -10,6 +10,7 @@
   --text-secondary: #9ca3af;
   --text-muted: #6b7280;
   --error: #f63b54;
+  --danger-text: #fca5a5;
   --error-muted: rgba(246, 59, 84, 0.15);
   --success: #22c55e;
   --success-muted: rgba(34, 197, 94, 0.15);
@@ -21,7 +22,7 @@
   --radius-sm: 6px;
   --radius: 10px;
   --radius-lg: 14px;
-  --shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+
 
   --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
   --font-mono: 'Cascadia Code', 'Consolas', ui-monospace, monospace;
@@ -33,6 +34,12 @@
   --space-5: 24px;
   --space-6: 32px;
   --space-8: 48px;
+
+  --layout-margin: 50px;
+  --layout-gutter: 40px;
+  --layout-columns: repeat(4, minmax(0, 1fr));
+  --control-height: 48px;
+  --button-width: 240px;
 
   --scan-height: 56px;
   --header-height: 56px;
@@ -101,7 +108,7 @@ a {
   border: 1px solid var(--border);
 }
 
-.badge-accent { background: var(--accent-muted); border-color: var(--accent); color: var(--accent); }
-.badge-success { background: var(--success-muted); border-color: var(--success); color: var(--success); }
-.badge-error { background: var(--error-muted); border-color: var(--error); color: var(--error); }
-.badge-warning { background: var(--warning-muted); border-color: var(--warning); color: var(--warning); }
+.badge-accent { color: var(--accent); }
+.badge-success { color: var(--success); }
+.badge-error { color: var(--error); }
+.badge-warning { color: var(--warning); }

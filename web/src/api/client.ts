@@ -51,6 +51,9 @@ export const api = {
   planShipment: (barcode: string, included: boolean) => request<TripPlan>(`/trip-plan/${encodeURIComponent(barcode)}`, {
     method: 'PUT', body: JSON.stringify({ included }),
   }),
+  renameTrip: (id: string, name: string) => request<DispatchTrip>(`/trips/${encodeURIComponent(id)}`, {
+    method: 'PATCH', body: JSON.stringify({ name }),
+  }),
   createTrip: (name: string) => request<DispatchTrip>('/trips', { method: 'POST', body: JSON.stringify({ name }) }),
   stats: () => request<any>('/stats'),
   dispatchSummary: () => request<DispatchSummary>('/dispatch-summary'),

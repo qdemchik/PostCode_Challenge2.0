@@ -226,8 +226,8 @@ export default function ScanPage() {
     (!review.isEligibleForDispatch ? 'NOT_ELIGIBLE' : null));
 
   return (
-    <div className="stack">
-      <div className="flex-between">
+    <div className="page-stack">
+      <div className="page-heading">
         <div>
           <h1 style={{ margin: 0, fontSize: 22 }}>Сборка исходящей почты</h1>
           <p className="muted" style={{ margin: '4px 0 0' }}>
@@ -248,7 +248,7 @@ export default function ScanPage() {
         </div>
       )}
 
-      <div className="card" style={{ padding: 20 }}>
+      <div className="card scan-entry">
         <label className="card-title" htmlFor="scan">
           Отсканируйте / введите ШПИ
         </label>
@@ -269,7 +269,7 @@ export default function ScanPage() {
         {lookupIssue && <p role="status">{lookupIssue.message}</p>}
         <div className="flex mt-4">
           <button
-            className="btn btn-primary btn-lg"
+            className="btn btn-primary"
             disabled={busy || !!review || !code.trim()}
             onClick={() => processCode(code)}
           >
@@ -482,7 +482,7 @@ export default function ScanPage() {
       </div>
 
       {openContainers.length > 0 && (
-        <div className="card mt-4">
+        <div className="card table-scroll">
           <div className="card-title">Открытые ёмкости (pre-assign / текущие)</div>
           <table className="table">
             <thead>

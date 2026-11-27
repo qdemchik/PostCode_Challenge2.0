@@ -90,18 +90,20 @@ export default function DemoPanel() {
             <input type="checkbox" checked={!!flags.autoNestBags} disabled={busy} onChange={() => toggle('autoNestBags')} />
             Автовложение мешков в контейнер
           </label>
-          <button className="btn btn-danger" disabled={busy} onClick={reset}>
-            Сбросить сессию + pre-assign
-          </button>
-          <p className="muted" style={{ marginTop: 12, fontSize: 13 }}>
-            Перезагружает shipments_demo.json, создаёт черновые ёмкости по направлениям.
-          </p>
+          <div className="demo-reset">
+            <button className="btn btn-ghost demo-reset-button" disabled={busy} onClick={reset}
+              aria-describedby="demo-reset-hint">
+              Сбросить демо-сессию
+            </button>
+            <p id="demo-reset-hint" className="muted">
+              Восстановит исходные отправления и создаст черновые ёмкости по направлениям.
+            </p>
+          </div>
         </div>
       </div>
 
       <div className="card" style={{ borderColor: 'var(--warning)' }}>
-        <strong>Важно:</strong> все ФИО, адреса и часть реквизитов — синтетические. Используйте только для
-        демонстрации хакатона.
+        <strong>Важно:</strong> все ФИО, адреса и часть реквизитов — синтетические.
       </div>
       <form className="card stack" onSubmit={(event) => {
         event.preventDefault();

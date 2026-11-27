@@ -43,7 +43,7 @@ try{
  await new Promise(done=>http.listen(port,'127.0.0.1',done));
  await wait(async()=>(await fetch(base+'/api/health')).ok,'API');
  edge=spawn(process.env.BROWSER_PATH ?? 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',[
-  '--headless=new','--disable-gpu','--no-first-run','--no-default-browser-check',
+  '--headless=new','--window-size=1440,1000','--disable-gpu','--no-first-run','--no-default-browser-check',
   '--user-data-dir='+join(dir,'edge'),'--remote-debugging-port='+debugPort,'about:blank'
  ],{windowsHide:true,stdio:'ignore'});
  edge.on('error', (error) => console.error('Не удалось запустить браузер. Проверьте BROWSER_PATH.', error.message));
@@ -158,24 +158,61 @@ try{
  await wait(()=>evaluate('Array.from(document.querySelectorAll(".badge")).some(e=>e.textContent==="Передано водителю")'),'handover in summary');
  console.log('Browser workflow, paper confirmation, foreign/duplicate scan and handover verified');
 
- const tripSelector = '.trip-picker select';
+ for (const width of [320, 390, 768]) {
+  await cdp('Emulation.setDeviceMetricsOverride', { width, height: 844, deviceScaleFactor: 1, mobile: true });
+  for (const path of ['/', '/scan', '/containers', '/finish', '/demo', '/search', '/print']) {
+   await navigate(path);
+   await wait(() => evaluate(`(() => {
+     const root = document.documentElement;
+     const main = document.querySelector('.app-main');
+     const nav = document.querySelector('.app-header nav');
+     return !!main?.querySelector('.trip-picker') && !!nav && root.clientWidth === ${width}
+       && root.scrollWidth <= root.clientWidth + 1
+       && nav.getBoundingClientRect().right <= root.clientWidth;
+   })()`), 'responsive layout ' + width + 'px ' + path);
+  }
+ }
+ await cdp('Emulation.clearDeviceMetricsOverride');
+ console.log('Responsive layout verified at 320, 390 and 768 CSS pixels');
+
+ const tripSelector = '.trip-picker [data-trip-id][aria-pressed="true"]';
  const inputValue = (selector, value) => evaluate(`(() => {
    const input = document.querySelector(${JSON.stringify(selector)});
    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, ${JSON.stringify(value)});
    input.dispatchEvent(new Event('input', { bubbles: true }));
  })()`);
  const chooseTrip = (id) => evaluate(`(() => {
-   const picker = document.querySelector(${JSON.stringify(tripSelector)});
-   picker.value = ${JSON.stringify(id)};
-   picker.dispatchEvent(new Event('change', { bubbles: true }));
+   const trip = [...document.querySelectorAll('.trip-picker [data-trip-id]')]
+     .find((item) => item.dataset.tripId === ${JSON.stringify(id)});
+   trip.click();
  })()`);
+ await navigate('/');
+ await wait(() => evaluate(`(() => {
+   const grid = document.querySelector('.grid-4');
+   if (!grid) return false;
+   const cards = [...grid.children].map((card) => card.getBoundingClientRect());
+   const near = (a, b) => Math.abs(a - b) < 1;
+   const buttons = [...document.querySelectorAll('.page-stack .btn')].map((button) => button.getBoundingClientRect());
+   return buttons.length > 1 && buttons.every((button) => near(button.width, 240) && near(button.height, 48))
+     && cards.length === 4 && cards.every((card) => near(card.top, cards[0].top))
+     && near(cards[0].left, 50) && near(document.documentElement.clientWidth - cards[3].right, 50)
+     && cards.slice(1).every((card, index) => near(card.left - cards[index].right, 40))
+     && !document.querySelector('.trip-picker select, .logo-mark');
+ })()`), 'four-column desktop grid');
  const createTrip = async (name) => {
   await click(button('button','Новый рейс'), 'new trip');
+  await wait(() => evaluate(`(() => {
+    const form = document.querySelector('.trip-form');
+    if (!form) return false;
+    const [input, ...buttons] = [...form.querySelectorAll('input, button')].map((item) => item.getBoundingClientRect());
+    return buttons.length === 2 && buttons.every((item) => Math.abs(item.top - input.top) < 1
+      && Math.abs(item.bottom - input.bottom) < 1);
+  })()`), 'trip form controls aligned');
   await inputValue('.trip-picker input', name);
   await click(button('button','Создать рейс'), 'save trip');
-  const option = `document.querySelector(${JSON.stringify(tripSelector)})?.selectedOptions[0]`;
+  const option = `document.querySelector(${JSON.stringify(tripSelector)})`;
   return wait(async () => {
-   const selected = await evaluate(`(${option})?.textContent === ${JSON.stringify(name)} && (${option})?.value`);
+   const selected = await evaluate(`(${option})?.textContent === ${JSON.stringify(name)} && (${option})?.dataset.tripId`);
    return selected;
   }, 'active trip ' + name);
  };
@@ -194,6 +231,12 @@ try{
  const fixtures = list.items.filter((item) => !item.containerId && !item.routingIssue && item.address && item.city).slice(0, 2);
  if (fixtures.length !== 2) throw Error('Missing trip fixtures');
  const firstTrip = await createTrip('Утренний');
+ await click(button('button','Переименовать'), 'rename active trip');
+ await inputValue('.trip-picker input', 'Утренний рейс');
+ await click(button('button','Сохранить название'), 'save trip name');
+ await wait(() => evaluate('document.querySelector(".trip-option[aria-pressed=true]")?.textContent === "Утренний рейс"'), 'updated trip name');
+ await navigate('/');
+ await wait(() => evaluate('document.querySelector(".trip-option[aria-pressed=true]")?.textContent === "Утренний рейс"'), 'persisted trip name');
  await click(button('a', 'План рейса'), 'open trip plan');
  await wait(() => evaluate('Boolean(document.querySelector("#plan-code"))'), 'plan barcode control');
  await inputValue('#plan-code', fixtures[0].barcode);

@@ -56,7 +56,6 @@ export default function App() {
     <div className="app-shell">
       <header className="app-header">
         <div className="logo">
-          <span className="logo-mark">П</span>
           Исходящая почта · ОПС 114000
         </div>
         <nav>
@@ -71,7 +70,7 @@ export default function App() {
           <NavLink to="/print">Печать</NavLink>
           <NavLink to="/demo">Демо</NavLink>
         </nav>
-        <div style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--text-secondary)' }}>
+        <div className="app-header-note">
           Хакатон · синтетические данные
         </div>
       </header>

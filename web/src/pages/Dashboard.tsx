@@ -33,8 +33,8 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="stack">
-      <div className="flex-between">
+    <div className="page-stack">
+      <div className="page-heading">
         <div>
           <h1 style={{ margin: 0, fontSize: 24 }}>Исходящая почта сегодня</h1>
           <p className="muted" style={{ margin: '6px 0 0' }}>
@@ -45,13 +45,13 @@ export default function Dashboard() {
           <button className="btn btn-ghost" onClick={runPreAssign} disabled={busy}>
             Pre-assign ёмкости
           </button>
-          <Link to="/scan" className="btn btn-primary btn-xl">
+          <Link to="/scan" className="btn btn-primary">
             Начать сборку
           </Link>
         </div>
       </div>
 
-      <div className="grid-4 mt-4">
+      <div className="grid-4">
         <div className="card">
           <div className="card-title">К отправке</div>
           <div className="stat-value">{stats?.eligible ?? '—'}</div>
@@ -59,14 +59,14 @@ export default function Dashboard() {
         </div>
         <div className="card">
           <div className="card-title">Вложено</div>
-          <div className="stat-value" style={{ color: 'var(--success)' }}>
+          <div className="stat-value">
             {stats?.placed ?? '—'}
           </div>
           <div className="stat-label">в ёмкости</div>
         </div>
         <div className="card">
           <div className="card-title">Осталось</div>
-          <div className="stat-value" style={{ color: 'var(--accent)' }}>
+          <div className="stat-value">
             {remaining}
           </div>
           <div className="stat-label">ещё отсканировать</div>
@@ -80,7 +80,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="grid-2 mt-4">
+      <div className="grid-2">
         <div className="card">
           <div className="card-title">Статусы отправлений</div>
           <table className="table">
@@ -135,7 +135,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="card mt-4" style={{ background: 'var(--accent-muted)', borderColor: 'var(--accent)' }}>
+      <div className="card">
         <strong>Гипотеза pre-assignment:</strong> при загрузке (или по кнопке) система заранее
         создаёт ёмкости по направлениям и присваивает отправлениям{' '}
         <code>preAssignedContainerId</code>. Оператор сканирует — система сразу вкладывает в

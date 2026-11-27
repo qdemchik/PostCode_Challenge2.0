@@ -123,7 +123,7 @@ export default function FinishPage() {
   };
 
   return (
-    <div className="stack">
+    <div className="page-stack finish-page">
       <h1 style={{ margin: 0, fontSize: 22 }}>Завершение · накладные ф.23а</h1>
       <p className="muted">Закройте все ёмкости, сформируйте и напечатайте накладные, отметьте готовность к вывозу.</p>
 
@@ -135,7 +135,7 @@ export default function FinishPage() {
         {summaryError && <p role="alert">{summaryError}</p>}
         {loading && !summary && <p role="status">Загрузка сводки…</p>}
         {summary && (
-          <div className="grid-2 container-layout">
+          <div className="grid-2 container-layout finish-summary">
             <div className="stack">
               {summary.tripPlan && (
                 <div className="stack">
@@ -221,7 +221,7 @@ export default function FinishPage() {
       )}
 
       {waybills.length > 0 && (
-        <div className="card mt-4">
+        <div className="card table-scroll">
           <div className="card-title">Сформированные накладные</div>
           <table className="table">
             <thead>

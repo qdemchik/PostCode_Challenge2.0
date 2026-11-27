@@ -58,10 +58,27 @@ export async function tripRoutes(app: FastifyInstance) {
     return describeTripPlan(tripId);
   });
 
+  const readName = (body?: { name?: unknown }) => typeof body?.name === 'string' ? body.name.trim() : '';
+  const invalidName = { code: 'INVALID_TRIP_NAME', message: 'Укажите название рейса до 80 символов.' };
+
+  app.patch<{ Params: { id: string }; Body: { name?: unknown } }>('/api/trips/:id', async (req, reply) => {
+    const name = readName(req.body);
+    if (!name || name.length > 80) return reply.code(400).send(invalidName);
+    const { trips } = getState();
+    const id = req.params.id;
+    if (!Object.hasOwn(trips, id)) {
+      return reply.code(404).send({ code: 'TRIP_NOT_FOUND', message: 'Рейс не найден. Обновите список рейсов.' });
+    }
+    const trip = trips[id];
+    trip.name = name;
+    saveSessionChange();
+    return trip;
+  });
+
   app.post<{ Body: { name?: unknown } }>('/api/trips', async (req, reply) => {
-    const name = typeof req.body?.name === 'string' ? req.body.name.trim() : '';
+    const name = readName(req.body);
     if (!name || name.length > 80) {
-      return reply.code(400).send({ code: 'INVALID_TRIP_NAME', message: 'Укажите название рейса до 80 символов.' });
+      return reply.code(400).send(invalidName);
     }
     const trip = { id: makeId('trip'), name, createdAt: new Date().toISOString() };
     getState().trips[trip.id] = trip;
