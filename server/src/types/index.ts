@@ -15,6 +15,7 @@ export type PrintEvidence = { source: 'paper' | 'demo'; at: string };
 
 export type ContainerKind =
   | 'группа РПО'
+  | 'группа ПТ'
   | 'контейнер'
   | 'мешок'
   | 'ящик'
@@ -37,6 +38,7 @@ export type ContainerCategory =
 export interface Shipment {
   id: string;
   plannedTripId?: string;
+  markFlags?: Partial<Record<ShipmentMark, boolean>>;
   barcode: string;
   kind: string;
   kindNormalized: string;
@@ -74,6 +76,7 @@ export interface Shipment {
   errorCode?: string;
   errorMessage?: string;
 }
+export type ShipmentMark = 'careful' | 'thermal' | 'oversized' | 'government' | 'srm';
 
 export interface Container {
   id: string;
@@ -84,10 +87,17 @@ export interface Container {
   kind: ContainerKind;
   packagingModel: string;
   tareWeightGrams: number;
+  tareSource?: 'reference' | 'manual';
   maxWeightGrams: number;
+  massLimitOverrideGrams?: number;
   sealNumber?: string;
   packagingNumber?: string;
   shipmentIds: string[];
+  parentContainerId?: string;
+  childContainerIds?: string[];
+  measuredWeightGrams?: number;
+  weightEvidence?: { source: WeightSource; at: string };
+  continuationContainerId?: string;
   totalWeightGrams: number;
   marks: string[];
   status: ContainerStatus;
@@ -98,6 +108,16 @@ export interface Container {
   opsIndex: string;
   group: 'ПК' | 'ПО' | 'EMS';
 }
+export type WeightSource = 'scale' | 'calculated' | 'manual';
+export type ScaleMode = 'stable' | 'unstable' | 'offline' | 'overload';
+export interface ScaleReading {
+  grams: number;
+  stable: boolean;
+  unit: 'g';
+  ts: string;
+  calculatedGrams: number;
+  toleranceGrams: number;
+}
 
 export interface Waybill {
   id: string;
@@ -105,6 +125,7 @@ export interface Waybill {
   directionId: string;
   directionIds?: string[];
   containerIds: string[];
+  containerShipmentCounts?: Record<string, number>;
   status: DocumentStatus;
   createdAt: string;
   printedAt?: string;
@@ -200,6 +221,7 @@ export interface TripPlan {
 }
 
 export interface SessionState {
+  packagingReferenceVersion: 1;
   trips: Record<string, DispatchTrip>;
   shipments: Record<string, Shipment>;
   containers: Record<string, Container>;
@@ -210,6 +232,9 @@ export interface SessionState {
   demoFlags: {
     printerError: boolean;
     sourceDown: boolean;
+    autoNestBags?: boolean;
+    scaleMode?: ScaleMode;
+    scaleErrorGrams?: number;
   };
 }
 

@@ -4,6 +4,8 @@ import { assignShipment, removeFromContainer, transferShipment, transferTargets 
 import { validateBarcode } from '../utils/barcode.js';
 import { withDispatchDetails } from '../services/routing.js';
 import type { Shipment } from '../types/index.js';
+import { shipmentMarkLabels } from '../reference/marks.js';
+import type { ShipmentMark } from '../types/index.js';
 import { requestTripId } from './trips.js';
 
 export async function shipmentRoutes(app: FastifyInstance) {
@@ -71,6 +73,13 @@ export async function shipmentRoutes(app: FastifyInstance) {
         });
       }
       const index = req.body.destinationIndex;
+      const flags = req.body.markFlags;
+      if (flags !== undefined && (!flags || typeof flags !== 'object' || Array.isArray(flags) ||
+        Object.entries(flags).some(([key, value]) => !Object.hasOwn(shipmentMarkLabels, key) || typeof value !== 'boolean'))) {
+        return reply.code(400).send({ code: 'INVALID_MARK_FLAGS', message: 'Проверьте выбранные отметки отправления.' });
+      }
+      const changedFlags = (Object.keys(flags ?? {}) as ShipmentMark[])
+        .filter((key) => !!flags?.[key] !== !!s.markFlags?.[key]);
       if (index !== undefined && (!Number.isSafeInteger(index) || index < 0 || index > 999999)) {
         return reply.code(400).send({
           code: 'INVALID_SHIPMENT_DATA',
@@ -83,7 +92,7 @@ export async function shipmentRoutes(app: FastifyInstance) {
       })) {
         return reply.code(400).send({ code: 'INVALID_SHIPMENT_DATA', message: 'Проверьте категорию и способ пересылки.' });
       }
-      if (s.containerId && (
+      if (s.containerId && (changedFlags.length ||
         (weight !== undefined && weight !== s.weightGrams) ||
         (index !== undefined && index !== s.destinationIndex) ||
         (req.body.category !== undefined && req.body.category !== s.category) ||
@@ -91,7 +100,7 @@ export async function shipmentRoutes(app: FastifyInstance) {
       )) {
         return reply.code(409).send({
           code: 'SHIPMENT_IN_CONTAINER',
-          message: 'Извлеките отправление из ёмкости перед изменением массы или маршрута.',
+          message: 'Извлеките отправление из ёмкости перед изменением массы, маршрута или отметок.',
         });
       }
       if (!s.originalData) s.originalData = { ...s };
@@ -105,19 +114,27 @@ export async function shipmentRoutes(app: FastifyInstance) {
         'category',
         'method',
       ] as const;
-      for (const key of allowed) {
-        if (key in req.body && req.body[key] !== undefined && req.body[key] !== s[key]) {
-          const oldValue = (s as any)[key];
-          (s as any)[key] = (req.body as any)[key];
+      const applyField = <K extends typeof allowed[number]>(key: K, value: Shipment[K]) => {
+        if (value !== undefined && value !== s[key]) {
+          const oldValue = s[key];
+          s[key] = value;
           addAudit({
             entityType: 'shipment',
             entityId: s.barcode,
             action: 'field_edit',
             field: key,
             oldValue,
-            newValue: (req.body as any)[key],
+            newValue: value,
           });
         }
+      };
+      allowed.forEach((key) => applyField(key, req.body[key]));
+      for (const key of changedFlags) {
+        const oldValue = !!s.markFlags?.[key];
+        const newValue = !!flags?.[key];
+        s.markFlags = { ...s.markFlags, [key]: newValue };
+        addAudit({ entityType: 'shipment', entityId: s.barcode, action: 'field_edit',
+          field: shipmentMarkLabels[key], oldValue, newValue });
       }
       s.status = s.containerId ? 'placed' : 'verified';
       s.verifiedAt = new Date().toISOString();

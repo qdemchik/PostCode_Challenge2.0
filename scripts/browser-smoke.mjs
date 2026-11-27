@@ -87,6 +87,10 @@ try{
  })()`);
  await navigate('/scan');
  await wait(() => evaluate('document.querySelector("input[name=notes]")?.value === "Smoke draft"'), 'review draft retained');
+ for (const mark of ['careful', 'thermal']) {
+   const checkbox = 'document.querySelector("input[name=mark-' + mark + ']")';
+   await click(checkbox, 'set mark ' + mark);
+ }
  await click(button('form button','Подтвердить и вложить'),'confirm shipment');
  const shipment=await wait(async()=>{
   const data=await(await fetch(base+'/api/shipments/IN261116000001')).json();
@@ -94,9 +98,23 @@ try{
  },'assignment');
  await navigate('/containers');
  await click(button('button',shipment.containerId),'container selection');
+ await click(button('button','Изменить реквизиты'),'edit packaging');
+ await evaluate(`(() => {
+   const model = document.querySelector('select[name="packagingModel"]');
+   const available = Array.from(model.options).find(option => option.value !== model.value);
+   if (!available) throw Error('No alternate packaging model');
+   model.value = available.value;
+   model.dispatchEvent(new Event('change', { bubbles: true }));
+ })()`);
+ await click(button('form button','Сохранить'),'save alternate packaging model');
+ await wait(async () => {
+  const detail = await (await fetch(base + '/api/containers/' + shipment.containerId)).json();
+  return detail.tareWeightGrams === 110 && detail.maxWeightGrams === 10_000;
+ }, 'new tare and reference limit');
  await click(button('button','Закрыть ёмкость'),'close container');
  const link='document.querySelector('+JSON.stringify('a[href="/print/label/'+shipment.containerId+'"]')+')';
  await click(link,'label preview');
+ await wait(() => evaluate('document.querySelector("article")?.textContent.includes("Терморежим, Осторожно")'), 'combined marks printed');
  await wait(()=>evaluate('(()=>{const canvas=document.querySelector("canvas");return canvas&&canvas.getContext("2d").getImageData(0,0,canvas.width,1).data.some((x,i)=>i%4===3&&x===255);})()'),'barcode drawn');
  await evaluate('window.print=()=>{}');
  await click(button('button','Печать / PDF'),'open label print dialog');
@@ -216,6 +234,40 @@ try{
   item.id !== original.id && item.replacesWaybillIds?.includes(original.id)
  ), 'replacement linked');
  console.log('Trip selection, isolation and waybill replacement verified');
+
+ const replacement = (await tripDocuments()).find((item) => item.replacesWaybillIds?.includes(original.id));
+ const tripHeaders = { 'x-postcode-trip': firstTrip, 'content-type': 'application/json' };
+ const released = await fetch(base + '/api/waybills/' + replacement.id + '/cancel', {
+  method: 'POST', headers: tripHeaders, body: JSON.stringify({ reason: 'Проверка вложенных ёмкостей' }),
+ });
+ if (!released.ok) throw Error('Unable to release container for nesting test');
+ await navigate('/containers');
+ await click(button('button', firstShipment.containerId), 'open inner container');
+ await click(button('button', 'Открыть снова'), 'reopen inner container');
+ await click(button('button', 'Изменить реквизиты'), 'select weighed category');
+ await evaluate(`(() => {
+  const category = document.querySelector('select[name="category"]');
+  category.value = 'Простая';
+  category.dispatchEvent(new Event('change', { bubbles: true }));
+ })()`);
+ await click(button('form button','Сохранить'), 'save weighed category');
+ await click(button('button', 'Взвесить'), 'read demo scale');
+ await click(button('button', 'Принять вес с весов'), 'accept scale reading');
+ await click(button('button', 'Закрыть ёмкость'), 'close weighed container');
+ await wait(async () => {
+  const item = await (await fetch(base + '/api/containers/' + firstShipment.containerId)).json();
+  return item.status === 'closed' && item.measuredWeightGrams > 0 && item.weightEvidence?.source === 'scale';
+ }, 'measurement saved');
+ await click(button('button', 'Создать внешний контейнер'), 'create outer container');
+ await click(button('form button', 'Вложить ёмкость'), 'nest weighed container');
+ await wait(() => evaluate('document.body.textContent.includes("Вложенные ёмкости · 1")'), 'nested container visible');
+ await click(button('button', 'Закрыть ёмкость'), 'close outer container');
+ await navigate('/finish');
+ await click(button('button', 'Сформировать ф.23а'), 'form waybill for nested container');
+ await wait(async () => (await tripDocuments()).some((item) => item.status === 'formed' &&
+  item.totalContainers === 1 && item.totalShipments === 1 && !item.containerIds.includes(firstShipment.containerId)
+ ), 'waybill counts the outer container only');
+ console.log('Demo weighing, container nesting and document quantities verified');
 }finally{
  ws?.close();edge?.kill();child.kill();http.close();
  http.closeAllConnections(); await delay(750);

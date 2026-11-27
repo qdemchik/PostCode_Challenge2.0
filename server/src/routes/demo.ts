@@ -3,18 +3,29 @@ import { getState, initSession, persistSession, restoreSession, saveSessionChang
 import { preAssignContainers } from '../services/assignment.js';
 import { isEligibleForDispatch } from '../services/routing.js';
 import { requestTripId } from './trips.js';
+import type { ScaleMode } from '../types/index.js';
+import { maxDemoErrorGrams } from '../reference/weighing.js';
 
 const opsDate = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Moscow' });
 
 export async function demoRoutes(app: FastifyInstance) {
   app.get('/api/demo/flags', async () => getState().demoFlags);
 
-  app.post<{ Body: { printerError?: boolean; sourceDown?: boolean } }>(
+  app.post<{ Body: { printerError?: boolean; sourceDown?: boolean; autoNestBags?: boolean; scaleMode?: ScaleMode; scaleErrorGrams?: number | null } }>(
     '/api/demo/toggle-error',
-    async (req) => {
+    async (req, reply) => {
       const flags = getState().demoFlags;
+      const mode = req.body?.scaleMode;
+      const error = req.body?.scaleErrorGrams;
+      if ((mode !== undefined && !['stable', 'unstable', 'offline', 'overload'].includes(mode)) ||
+        (error !== undefined && error !== null && (!Number.isSafeInteger(error) || Math.abs(error) > maxDemoErrorGrams))) {
+        return reply.code(400).send({ code: 'INVALID_SCALE_SETTINGS', message: 'Проверьте состояние и погрешность демо-весов.' });
+      }
       if (typeof req.body?.printerError === 'boolean') flags.printerError = req.body.printerError;
       if (typeof req.body?.sourceDown === 'boolean') flags.sourceDown = req.body.sourceDown;
+      if (typeof req.body?.autoNestBags === 'boolean') flags.autoNestBags = req.body.autoNestBags;
+      if (mode) flags.scaleMode = mode;
+      if (error !== undefined) flags.scaleErrorGrams = error ?? undefined;
       saveSessionChange();
       return flags;
     }

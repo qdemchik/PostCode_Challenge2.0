@@ -7,9 +7,10 @@ import { printEvidenceLabel } from '../printEvidence';
 import '../styles/print.css';
 
 type Label = Pick<Container, 'directionId' | 'category' | 'kind' | 'packagingModel' |
-  'packagingNumber' | 'sealNumber' | 'totalWeightGrams' | 'marks' | 'opsIndex' | 'createdAt' | 'labelPrinted' | 'labelPrintEvidence'> & {
+  'packagingNumber' | 'sealNumber' | 'totalWeightGrams' | 'marks' | 'opsIndex' | 'createdAt' | 'labelPrinted' | 'labelPrintEvidence' | 'weightEvidence'> & {
   containerId: string;
   shipmentCount: number;
+  childContainerCount?: number;
 };
 
 type Document =
@@ -18,6 +19,7 @@ type Document =
 
 const date = (value: string) => new Date(value).toLocaleString('ru-RU');
 const mass = (grams: number) => `${grams.toLocaleString('ru-RU')} г`;
+const weightLabel = { scale: 'По весам', manual: 'Введена вручную', calculated: 'Расчётная' };
 
 function Barcode({ value }: { value: string }) {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -38,7 +40,9 @@ function LabelForm({ label }: { label: Label }) {
         <dt>Номер тары</dt><dd>{label.packagingNumber || '—'}</dd>
         <dt>Номер пломбы</dt><dd>{label.sealNumber || '—'}</dd>
         <dt>Масса брутто</dt><dd>{mass(label.totalWeightGrams)}</dd>
+      {label.weightEvidence && <><dt>Источник массы</dt><dd>{weightLabel[label.weightEvidence.source]} · {date(label.weightEvidence.at)}</dd></>}
         <dt>Вложений</dt><dd>{label.shipmentCount}</dd>
+      {!!label.childContainerCount && <><dt>Вложенных ёмкостей</dt><dd>{label.childContainerCount}</dd></>}
         <dt>Отметки</dt><dd>{label.marks.join(', ') || '—'}</dd>
         <dt>Создана</dt><dd>{date(label.createdAt)}</dd>
       </dl>
@@ -68,7 +72,10 @@ function WaybillForm({ waybill }: { waybill: Extract<Document, { type: 'waybill'
             {waybill.containers.map((c) => (
               <tr key={c.id}>
                 <td>{c.id}</td><td>{c.directionId}</td><td>{c.kind} · {c.category}</td>
-                <td>{c.sealNumber || '—'}</td><td>{c.shipmentIds.length}</td><td>{mass(c.totalWeightGrams)}</td>
+                <td>{c.sealNumber || '—'}</td><td>{waybill.containerShipmentCounts?.[c.id] ?? c.shipmentIds.length}</td><td>
+                  {mass(c.totalWeightGrams)}
+                  {c.weightEvidence && <div>{weightLabel[c.weightEvidence.source]} · {date(c.weightEvidence.at)}</div>}
+                </td>
               </tr>
             ))}
           </tbody>

@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import type { SessionState, Shipment, AuditEntry } from '../types/index.js';
+import { containerMassLimit, legacyMassLimits, packaging, packagingModel } from '../reference/packaging.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = join(__dirname, '../../../data');
@@ -10,6 +11,7 @@ const STATE_FILE = join(DATA_DIR, 'session-state.json');
 
 function emptyState(): SessionState {
   return {
+    packagingReferenceVersion: 1,
     trips: {},
     shipments: {},
     containers: {},
@@ -108,7 +110,25 @@ export function restoreSession(path = autosave?.path ?? STATE_FILE): boolean {
     !Array.isArray(restored.audit) || !record(restored.demoFlags)) {
     throw new Error(`Некорректный снимок рабочей сессии: ${path}`);
   }
-  state = { ...restored, reviewQueue: restored.reviewQueue ?? {}, trips: restored.trips ?? {} };
+  if (restored.packagingReferenceVersion !== 1) {
+    for (const container of Object.values(restored.containers)) {
+      if (!Object.hasOwn(packaging, container.kind)) continue;
+      const oldDefault = legacyMassLimits[container.kind];
+      if (oldDefault !== undefined && container.maxWeightGrams < oldDefault) {
+        container.massLimitOverrideGrams = container.maxWeightGrams;
+      }
+      const contents = container.shipmentIds.map((id) => restored.shipments[id]).filter(Boolean);
+      container.maxWeightGrams = containerMassLimit(container, contents);
+    }
+  }
+  for (const container of Object.values(restored.containers)) {
+    if (!Object.hasOwn(packaging, container.kind)) continue;
+    // ДОПУЩЕНИЕ: неизвестный текст заменяем моделью по умолчанию, сохранённую массу тары сохраняем.
+    const model = packagingModel(container.kind, container.packagingModel) ?? packaging[container.kind].models[0];
+    container.packagingModel = model.name;
+    container.tareSource ??= container.tareWeightGrams === model.tareGrams ? 'reference' : 'manual';
+  }
+  state = { ...restored, packagingReferenceVersion: 1, reviewQueue: restored.reviewQueue ?? {}, trips: restored.trips ?? {} };
   if (autosave?.path === path) autosave.checkpoint = JSON.stringify(state);
   console.log('[store] Session restored');
   return true;

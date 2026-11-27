@@ -1,7 +1,6 @@
 import type {
   Shipment,
   Container,
-  ContainerKind,
   ContainerCategory,
   AssignResult,
 } from '../types/index.js';
@@ -9,6 +8,9 @@ import { getState, addAudit } from './store.js';
 import { makeDocumentId } from '../utils/id.js';
 import { withDispatchDetails } from './routing.js';
 import { resolveReview } from './review.js';
+import { canPackShipments, containerMassLimit, packagingModel } from '../reference/packaging.js';
+import { computeMarks } from '../reference/marks.js';
+import { canNestContainer } from '../reference/containerNesting.js';
 
 const rtMark = /(?:^|\s)рт(?:$|\s)/;
 
@@ -35,13 +37,7 @@ export function groupOfKind(kind: string): 'ПК' | 'ПО' | 'EMS' {
   return 'ПК';
 }
 
-function defaultKindForGroup(group: 'ПК' | 'ПО' | 'EMS'): ContainerKind {
-  if (group === 'EMS') return 'мешок';
-  if (group === 'ПО') return 'мешок';
-  return 'мешок'; // группа РПО тоже часто мешок / без тары; для демо — мешок
-}
-
-function defaultCategory(shipment: Shipment): ContainerCategory {
+function defaultCategory(shipment: Pick<Shipment, 'kind' | 'category'>): ContainerCategory {
   const c = shipment.category.toLowerCase();
   if (c.includes('объявлен') || c.includes('ценност')) return 'Страховая';
   if (shipment.kind.toLowerCase().includes('ems')) return 'EMS';
@@ -49,41 +45,11 @@ function defaultCategory(shipment: Shipment): ContainerCategory {
   return 'Сборная';
 }
 
-function packagingFor(kind: ContainerKind): { model: string; tare: number; max: number } {
-  switch (kind) {
-    case 'контейнер':
-      return { model: 'Стандартный (КПШ)', tare: 110000, max: 500000 };
-    case 'паллета':
-      return { model: 'Стандартный', tare: 17000, max: 500000 };
-    case 'ящик':
-      return { model: 'Стандартный', tare: 1900, max: 10000 };
-    case 'коробка':
-      return { model: 'Стандартный', tare: 50, max: 10000 };
-    case 'мешок М':
-      return { model: '—', tare: 0, max: 14500 };
-    case 'группа РПО':
-      return { model: '—', tare: 0, max: 999999 };
-    default: // мешок
-      return { model: 'Брезентовый', tare: 500, max: 32000 };
-  }
-}
-
-function marksFor(shipments: Shipment[]): string[] {
-  const marks = new Set<string>();
-  for (const s of shipments) {
-    if (s.classification === 'Международная') marks.add('Международная');
-    if (s.kind.toLowerCase().includes('оптимальн')) marks.add('ОПТ');
-    if (rtMark.test(s.kind.toLowerCase())) marks.add('РТ');
-    if (s.kind.toLowerCase().includes('бизнес курьер')) marks.add('БК');
-  }
-  if (marks.size === 0) marks.add('Без отметки');
-  return Array.from(marks);
-}
-
-export function createContainerForShipment(s: Shipment, opsIndex = '114000', tripId?: string): Container {
+export function createContainerForShipment(s: Pick<Shipment, 'kind' | 'category' | 'directionContainer' | 'directionWaybill'>, opsIndex = '114000', tripId?: string): Container {
   const group = groupOfKind(s.kind);
-  const kind = defaultKindForGroup(group);
-  const pack = packagingFor(kind);
+  // ДОПУЩЕНИЕ: сохраняем брезентовый мешок как типовую тару автоматического подбора.
+  const kind = 'мешок';
+  const pack = packagingModel(kind)!;
   const state = getState();
   const id = makeDocumentId(opsIndex, [...Object.keys(state.containers), ...Object.keys(state.waybills)]);
   const container: Container = {
@@ -93,11 +59,12 @@ export function createContainerForShipment(s: Shipment, opsIndex = '114000', tri
     waybillDirectionId: s.directionWaybill,
     category: defaultCategory(s),
     kind,
-    packagingModel: pack.model,
-    tareWeightGrams: pack.tare,
-    maxWeightGrams: pack.max,
+    packagingModel: pack.name,
+    tareWeightGrams: pack.tareGrams,
+    tareSource: 'reference',
+    maxWeightGrams: containerMassLimit({ kind, packagingModel: pack.name, group }, []),
     shipmentIds: [],
-    totalWeightGrams: pack.tare,
+    totalWeightGrams: pack.tareGrams,
     marks: [],
     status: 'open',
     labelPrinted: false,
@@ -158,12 +125,13 @@ function compatibleContainers(s: Shipment, tripId?: string): Container[] {
       c.id !== s.containerId &&
       c.tripId === tripId &&
       c.status === 'open' &&
+      !c.parentContainerId &&
       !documented.has(c.id) &&
       c.directionId === s.directionContainer &&
       c.waybillDirectionId === s.directionWaybill &&
       c.group === group &&
       c.category === category &&
-      c.totalWeightGrams + s.weightGrams <= c.maxWeightGrams
+      fitsContainer(c, [...containerContents(c), s])
   );
 }
 
@@ -172,20 +140,124 @@ export function findBestOpenContainer(s: Shipment, tripId?: string): Container |
   return candidates.find((c) => c.id === s.preAssignedContainerId) ?? candidates[0] ?? null;
 }
 
-function updateContainerContents(container: Container) {
+export function containerContents(container: Container): Shipment[] {
   const shipments = getState().shipments;
-  const contents = container.shipmentIds.map((id) => shipments[id]).filter(Boolean);
-  container.totalWeightGrams = container.tareWeightGrams + contents.reduce((sum, shipment) => sum + shipment.weightGrams, 0);
-  container.marks = contents.length ? marksFor(contents) : [];
+  return container.shipmentIds.map((id) => shipments[id]).filter(Boolean);
+}
+
+export function childContainers(container: Container): Container[] {
+  const state = getState();
+  return (container.childContainerIds ?? []).map((id) => state.containers[id]).filter(Boolean);
+}
+
+export function containerShipments(container: Container): Shipment[] {
+  return [...containerContents(container), ...childContainers(container).flatMap(containerShipments)];
+}
+
+export function grossMassGrams(container: Container, contents: readonly Shipment[], children = childContainers(container)): number {
+  return container.tareWeightGrams + contents.reduce((sum, shipment) => sum + shipment.weightGrams, 0) +
+    children.reduce((sum, child) => sum + child.totalWeightGrams, 0);
+}
+
+export function resultingMassLimit(container: Container, contents: readonly Shipment[], children = childContainers(container)): number {
+  return containerMassLimit(container, [...contents, ...children.flatMap(containerShipments)]);
+}
+
+function fitsContainer(container: Container, contents: readonly Shipment[]): boolean {
+  return canPackShipments(container.kind, container.group, contents) &&
+    grossMassGrams(container, contents) <= resultingMassLimit(container, contents);
+}
+
+function canReduceContents(container: Container, contents: Shipment[], children = childContainers(container)): boolean {
+  const nextMass = grossMassGrams(container, contents, children);
+  const nextLimit = resultingMassLimit(container, contents, children);
+  const current = containerContents(container);
+  // Permit incremental recovery of an overweight container from an older session.
+  return nextMass <= nextLimit ||
+    (nextLimit >= resultingMassLimit(container, current) && nextMass < grossMassGrams(container, current));
+}
+
+function updateContainerContents(container: Container) {
+  const contents = containerContents(container);
+  container.totalWeightGrams = grossMassGrams(container, contents);
+  container.maxWeightGrams = resultingMassLimit(container, contents);
+  container.marks = computeMarks(contents, container, childContainers(container));
+  container.measuredWeightGrams = undefined;
+  container.weightEvidence = undefined;
   container.labelPrinted = false;
   container.labelPrintEvidence = undefined;
+}
+
+export function validateNesting(parentId: string, childId: string, attach: boolean): AssignResult {
+  const state = getState();
+  const parent = state.containers[parentId];
+  const child = state.containers[childId];
+  if (!parent || !child || parent.id === child.id ||
+    (attach && childContainers(child).some((descendant) => descendant.id === parentId || hasNestedId(descendant, parentId)))) {
+    return { ok: false, errorCode: 'INVALID_CONTAINER', errorMessage: 'Такое вложение невозможно. Выберите другую ёмкость и проверьте её состав.' };
+  }
+  const documented = Object.values(state.waybills).some((waybill) =>
+    waybill.status !== 'cancelled' && (waybill.containerIds.includes(parentId) || waybill.containerIds.includes(childId)));
+  if (documented || parent.status !== 'open' || parent.parentContainerId || child.status !== 'closed') {
+    return { ok: false, errorCode: 'CONTAINER_UNAVAILABLE', errorMessage: 'Нужны открытая внешняя и закрытая вложенная ёмкости, доступные для изменения.' };
+  }
+  const children = childContainers(parent);
+  if (attach ? !!child.parentContainerId : child.parentContainerId !== parentId) {
+    return { ok: false, errorCode: 'CONTAINER_ALREADY_NESTED', errorMessage: 'Проверьте текущую внешнюю ёмкость.' };
+  }
+  // ДОПУЩЕНИЕ: вложение разрешено внутри одного рейса и плана направлений.
+  if (attach && (parent.tripId !== child.tripId || parent.directionId !== child.directionId ||
+    parent.waybillDirectionId !== child.waybillDirectionId)) {
+    return { ok: false, errorCode: 'NESTING_ROUTE_MISMATCH', errorMessage: 'Рейс и направления ёмкостей должны совпадать.' };
+  }
+  const next = attach ? [...children, child] : children.filter((item) => item.id !== childId);
+  if (attach && !canPackShipments(child.kind, child.group, containerContents(child))) {
+    return { ok: false, errorCode: 'INCOMPATIBLE_PACKAGING', errorMessage: 'Вид вложенной тары не подходит для группы. Проверьте реквизиты.' };
+  }
+  if (next.some((item) => !canNestContainer(parent, item, next.filter((sibling) => sibling.id !== item.id)))) {
+    return { ok: false, errorCode: 'INCOMPATIBLE_NESTING',
+      errorMessage: 'Вид или категория ёмкости несовместимы. Выберите допустимую внешнюю ёмкость и проверьте её вложения.' };
+  }
+  const contents = containerContents(parent);
+  if (attach ? grossMassGrams(parent, contents, next) > resultingMassLimit(parent, contents, next)
+    : !canReduceContents(parent, contents, next)) {
+    return { ok: false, errorCode: 'OVERWEIGHT', errorMessage: 'После изменения состава превышена допустимая масса.' };
+  }
+  return { ok: true, container: parent };
+}
+
+function hasNestedId(container: Container, id: string, visited = new Set<string>()): boolean {
+  if (visited.has(container.id)) return false;
+  visited.add(container.id);
+  return childContainers(container).some((child) => child.id === id || hasNestedId(child, id, visited));
+}
+
+export function availableParents(childId: string): Container[] {
+  return Object.values(getState().containers).filter((parent) => validateNesting(parent.id, childId, true).ok);
+}
+
+export function changeNestedContainer(parentId: string, childId: string, attach: boolean): AssignResult {
+  const result = validateNesting(parentId, childId, attach);
+  if (!result.ok || !result.container) return result;
+  const parent = result.container;
+  const child = getState().containers[childId];
+  const children = parent.childContainerIds ?? [];
+  parent.childContainerIds = attach ? [...children, childId] : children.filter((id) => id !== childId);
+  child.parentContainerId = attach ? parentId : undefined;
+  updateContainerContents(parent);
+  addAudit({ entityType: 'container', entityId: parentId, action: attach ? 'container_nested' : 'container_detached',
+    newValue: { childId } });
+  return { ok: true, container: parent };
 }
 
 export function transferTargets(barcode: string, fromId: string): Container[] {
   const state = getState();
   const shipment = state.shipments[barcode];
   const container = state.containers[fromId];
-  return shipment?.containerId === fromId && container ? compatibleContainers(shipment, container.tripId) : [];
+  return shipment?.containerId === fromId && container
+    ? compatibleContainers(shipment, container.tripId)
+      .map((candidate) => ({ ...candidate, maxWeightGrams: resultingMassLimit(candidate, [...containerContents(candidate), shipment]) }))
+    : [];
 }
 
 export function transferShipment(barcode: string, fromId: string, toId?: string): AssignResult {
@@ -201,8 +273,12 @@ export function transferShipment(barcode: string, fromId: string, toId?: string)
   const to = toId
     ? transferTargets(barcode, fromId).find((container) => container.id === toId)
     : createContainerForShipment(shipment, from.opsIndex, from.tripId);
-  if (!to || to.shipmentIds.includes(barcode) || to.totalWeightGrams + shipment.weightGrams > to.maxWeightGrams) {
+  if (!to || to.shipmentIds.includes(barcode) || !fitsContainer(to, [...containerContents(to), shipment])) {
     return { ok: false, errorCode: 'TARGET_UNAVAILABLE', errorMessage: 'Выбранная ёмкость недоступна или в ней недостаточно места.' };
+  }
+  const remaining = containerContents(from).filter((item) => item.barcode !== barcode);
+  if (!canReduceContents(from, remaining)) {
+    return { ok: false, errorCode: 'OVERWEIGHT', errorMessage: 'После переноса исходная ёмкость превысит допустимую массу.' };
   }
   state.containers[to.id] = to;
   from.shipmentIds = from.shipmentIds.filter((id) => id !== barcode);
@@ -279,7 +355,7 @@ export function assignShipment(barcode: string, tripId?: string): AssignResult {
 
   if (!container) {
     container = createContainerForShipment(s, '114000', tripId);
-    if (container.totalWeightGrams + s.weightGrams > container.maxWeightGrams) {
+    if (!fitsContainer(container, [s])) {
       return {
         ok: false,
         shipment: s,
@@ -335,6 +411,10 @@ export function removeFromContainer(barcode: string, expectedContainerId?: strin
       errorMessage: 'Ёмкость закрыта. Сначала откройте её.',
       actionHint: 'Откройте ёмкость, затем извлеките отправление.',
     };
+  }
+  const remaining = containerContents(c).filter((item) => item.barcode !== barcode);
+  if (!canReduceContents(c, remaining)) {
+    return { ok: false, errorCode: 'OVERWEIGHT', errorMessage: 'После извлечения ёмкость превысит допустимую массу.' };
   }
   c.shipmentIds = c.shipmentIds.filter((id) => id !== barcode);
   updateContainerContents(c);

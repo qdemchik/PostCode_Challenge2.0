@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { reviewReasons, type ReviewReason, type Shipment } from '../../../server/src/types/index';
+import { reviewReasons, type ReviewReason, type Shipment, type ShipmentMark } from '../../../server/src/types/index';
 import { api, currentTripId } from '../api/client';
 import { useSession } from '../stores/session';
 import { useScanner } from '../hooks/useScanner';
@@ -36,6 +36,8 @@ export default function ScanPage() {
   const [showFields, setShowFields] = useState(!!Object.keys(draft?.fields ?? {}).length);
   const [review, setReview] = useState<ScanShipment | null>(draft?.review ?? null);
   const [draftFields, setDraftFields] = useState<Record<string, string>>(draft?.fields ?? {});
+  const [markLabels, setMarkLabels] = useState<Partial<Record<ShipmentMark, string>>>({});
+  useEffect(() => { void api.packagingReference().then((result) => setMarkLabels(result.shipmentMarkLabels)).catch(() => {}); }, []);
   const [reviewError, setReviewError] = useState('');
   const [lookupIssue, setLookupIssue] = useState<{ reason: ReviewReason; message: string } | null>(null);
   const [assignmentIssue, setAssignmentIssue] = useState<ReviewReason | null>(null);
@@ -128,12 +130,18 @@ export default function ScanPage() {
     const barcode = review.barcode;
     const trip = currentTripId();
     const values = new FormData(event.currentTarget);
-    const changes: Record<string, string | number> = {};
+    const changes: Record<string, unknown> = {};
     for (const [field] of reviewFields) {
       const input = String(values.get(field) ?? '').trim();
       const value = field === 'weightGrams' || field === 'destinationIndex' ? Number(input) : input;
       if (value !== (review[field] ?? '')) changes[field] = value;
     }
+    const markFlags: Shipment['markFlags'] = {};
+    for (const key of Object.keys(markLabels) as ShipmentMark[]) {
+      const checked = values.has('mark-' + key);
+      if (checked !== !!review.markFlags?.[key]) markFlags[key] = checked;
+    }
+    if (Object.keys(markFlags).length) changes.markFlags = markFlags;
     inFlight.current = true;
     setBusy(true);
     setReviewError('');
@@ -279,7 +287,9 @@ export default function ScanPage() {
       {review && (
         <form className="card stack" onSubmit={confirmShipment} onChange={(event) => {
           const field = event.target as HTMLInputElement;
-          if (field.name) setDraftFields((current) => ({ ...current, [field.name]: field.value }));
+          if (field.name) setDraftFields((current) => ({
+            ...current, [field.name]: field.type === 'checkbox' ? (field.checked ? 'on' : '') : field.value,
+          }));
         }}>
           <h2 className="card-title" ref={reviewRef} tabIndex={-1}>Проверка отправления</h2>
           <div className="mono">{review.barcode}</div>
@@ -326,6 +336,17 @@ export default function ScanPage() {
                 </label>
               ))}
             </div>
+            <fieldset>
+              <legend>Отметки отправления</legend>
+              <div className="flex">{Object.entries(markLabels).map(([key, label]) => (
+                <label key={key} className="flex">
+                  <input type="checkbox" name={'mark-' + key} disabled={busy}
+                    defaultChecked={draftFields['mark-' + key] !== undefined
+                      ? draftFields['mark-' + key] === 'on' : !!review.markFlags?.[key as ShipmentMark]} />
+                  {label}
+                </label>
+              ))}</div>
+            </fieldset>
             </div>
             </>
           )}

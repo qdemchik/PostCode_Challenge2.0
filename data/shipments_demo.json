@@ -236,6 +236,7 @@
   {
     "id": "IN261116000010",
     "barcode": "IN261116000010",
+    "markFlags": { "careful": true, "thermal": true },
     "kind": "Письмо",
     "kindNormalized": "Письмо",
     "weightGrams": 20,
@@ -262,6 +263,7 @@
   {
     "id": "IN261116000011",
     "barcode": "IN261116000011",
+    "markFlags": { "government": true },
     "kind": "Письмо",
     "kindNormalized": "Письмо",
     "weightGrams": 20,

@@ -365,7 +365,7 @@ test('ошибочный ручной ввод и неизвестный ШПИ 
 test('заполненный мешок и черновик чужого направления пропускаются', async () => {
   const state = getState();
   const shipment = state.shipments[barcode];
-  shipment.weightGrams = 20_000;
+  shipment.weightGrams = 6_000;
   const full = await assign(barcode);
   const otherCode = 'IN000000000001';
   state.shipments[otherCode] = {
@@ -374,7 +374,10 @@ test('заполненный мешок и черновик чужого нап�
   };
   const wrongDirection = await assign(otherCode);
   state.containers[wrongDirection.id].waybillDirectionId = '000000';
-  state.containers[wrongDirection.id].maxWeightGrams = 100_000;
+  Object.assign(state.containers[wrongDirection.id], {
+    kind: 'контейнер', packagingModel: 'Стандартный (КПШ)', tareWeightGrams: 110_000,
+    totalWeightGrams: 116_000, maxWeightGrams: 500_000,
+  });
   const nextCode = 'IN000000000002';
   state.shipments[nextCode] = {
     ...shipment, barcode: nextCode, containerId: undefined, status: 'pending',
@@ -384,7 +387,150 @@ test('заполненный мешок и черновик чужого нап�
   expect(next.id).not.toBe(full.id);
   expect(next.id).not.toBe(wrongDirection.id);
   expect(next.waybillDirectionId).toBe(shipment.directionWaybill);
-  expect(next.totalWeightGrams).toBe(next.tareWeightGrams + 20_000);
+  expect(next.totalWeightGrams).toBe(next.tareWeightGrams + 6_000);
+});
+
+test.each([
+  { group: 'ПК', limit: 10_000, changes: {} },
+  { group: 'EMS', limit: 32_000, changes: { kind: 'Отправление EMS', method: 'Авиа', destinationIndex: 901145 } },
+  { group: 'ПК с МПО', limit: 32_000, changes: {
+    classification: 'Международная' as const, category: 'Заказное', method: 'Авиа', destinationIndex: 101000, countryCode: 'FR',
+  } },
+])('мешок $group принимает ровно $limit г брутто и отклоняет превышение на 1 г', async ({ limit, changes }) => {
+  const state = getState();
+  const fixture = { ...state.shipments[barcode], ...changes, weightGrams: limit - 500 };
+  state.shipments[barcode] = fixture;
+  const accepted = await assign(barcode);
+  expect(accepted).toMatchObject({ kind: 'мешок', packagingModel: 'Брезентовый', totalWeightGrams: limit, maxWeightGrams: limit });
+  const extra = 'IN000000000004';
+  state.shipments[extra] = { ...fixture, barcode: extra, weightGrams: fixture.weightGrams + 1 };
+  const rejected = await app.inject({
+    method: 'POST', url: '/api/containers/assign', payload: { barcode: extra },
+  });
+  expect(rejected.statusCode).toBe(409);
+  expect(rejected.json().errorCode).toBe('OVERWEIGHT');
+  expect(Object.keys(state.containers)).toEqual([accepted.id]);
+});
+
+test('смена вида тары пересчитывает массу, ручной лимит не повышает справочный', async () => {
+  const container = await assign(barcode);
+  const url = '/api/containers/' + container.id;
+  const bag = await app.inject({ method: 'PATCH', url, payload: { maxWeightGrams: 100_000 } });
+  expect(bag.json().maxWeightGrams).toBe(10_000);
+  const another = await app.inject({ method: 'PATCH', url, payload: {
+    kind: 'контейнер', packagingModel: 'Малый (КПС-6)', maxWeightGrams: 500_000,
+  } });
+  expect(another.statusCode).toBe(200);
+  expect(another.json()).toMatchObject({
+    tareWeightGrams: 75_000, tareSource: 'reference', totalWeightGrams: 75_000 + getState().shipments[barcode].weightGrams, maxWeightGrams: 500_000,
+  });
+  const invalid = await app.inject({ method: 'PATCH', url, payload: { packagingModel: 'Авиа' } });
+  expect(invalid.statusCode).toBe(400);
+  const reference = (await app.inject({ method: 'GET', url: '/api/reference/packaging' })).json();
+  expect(reference.packaging['мешок'].models.map((item: { name: string }) => item.name))
+    .toEqual(['Брезентовый', 'Авиа', 'Стандартный']);
+  expect(reference.packaging['ящик'].models).toContainEqual(
+    expect.objectContaining({ name: 'Малый (ЯПМ-М)', available: false }),
+  );
+});
+
+test('последнее международное вложение нельзя извлечь, если остаток превышает обычный лимит', async () => {
+  const state = getState();
+  const fixture = { ...state.shipments[barcode], category: 'Заказное', weightGrams: 9_500 };
+  state.shipments[barcode] = fixture;
+  const domestic = await assign(barcode);
+  const international = 'IN000000000005';
+  state.shipments[international] = {
+    ...fixture, barcode: international, classification: 'Международная', method: 'Авиа',
+    destinationIndex: 101000, countryCode: 'FR', weightGrams: 1_000,
+  };
+  const mixed = await assign(international);
+  expect(mixed).toMatchObject({ id: domestic.id, totalWeightGrams: 11_000, maxWeightGrams: 32_000 });
+  const anotherDomestic = 'IN000000000006';
+  state.shipments[anotherDomestic] = { ...fixture, barcode: anotherDomestic, weightGrams: 1 };
+  expect((await assign(anotherDomestic)).id).toBe(mixed.id);
+  const remove = (code: string) => app.inject({
+    method: 'POST', url: '/api/containers/remove-shipment', payload: { barcode: code, containerId: mixed.id },
+  });
+  const blocked = await remove(international);
+  expect(blocked.statusCode).toBe(409);
+  expect(state.shipments[international].containerId).toBe(mixed.id);
+  expect((await remove(barcode)).statusCode).toBe(200);
+  expect((await remove(international)).json().container.maxWeightGrams).toBe(10_000);
+});
+
+test('вложенный мешок учитывается в массе и ф.23а только через внешний контейнер', async () => {
+  const child = await assign(barcode);
+  const close = (id: string) => app.inject({ method: 'POST', url: `/api/containers/${id}/close` });
+  await close(child.id);
+  const create = (kind: string) => app.inject({
+    method: 'POST', url: '/api/containers', payload: { kind, category: child.category,
+      directionId: child.directionId, waybillDirectionId: child.waybillDirectionId },
+  });
+  const invalid = (await create('ящик')).json();
+  const outer = (await create('контейнер')).json();
+  const nest = (parentId: string) => app.inject({
+    method: 'POST', url: `/api/containers/${parentId}/nest`, payload: { childId: child.id },
+  });
+  expect((await nest(child.id)).json().errorCode).toBe('INVALID_CONTAINER');
+  getState().containers[child.id].childContainerIds = [outer.id];
+  expect((await nest(outer.id)).json().errorCode).toBe('INVALID_CONTAINER');
+  delete getState().containers[child.id].childContainerIds;
+  const parents = await app.inject({ method: 'GET', url: `/api/containers/${child.id}/nest-parents` });
+  expect(parents.json().items.map((item: { id: string }) => item.id)).toEqual([outer.id]);
+  expect((await nest(invalid.id)).json().errorCode).toBe('INCOMPATIBLE_NESTING');
+  expect((await nest(outer.id)).json()).toMatchObject({
+    childContainerIds: [child.id], totalWeightGrams: outer.tareWeightGrams + child.totalWeightGrams,
+  });
+  expect((await app.inject({ method: 'POST', url: `/api/containers/${child.id}/reopen` })).statusCode).toBe(409);
+  expect((await close(outer.id)).statusCode).toBe(200);
+  const formed = await app.inject({ method: 'POST', url: '/api/waybills' });
+  expect(formed.json().waybills[0]).toMatchObject({ containerIds: [outer.id], totalContainers: 1, totalShipments: 1 });
+});
+
+test('при закрытии простой ёмкости учитывается измеренная масса и отклоняется перегруз', async () => {
+  const container = await assign(barcode);
+  const url = '/api/containers/' + container.id;
+  const weigh = (measuredWeightGrams: number) => app.inject({
+    method: 'POST', url: url + '/close', payload: { measuredWeightGrams },
+  });
+  expect((await weigh(1_000)).json().code).toBe('INVALID_WEIGHING');
+  expect((await app.inject({ method: 'PATCH', url, payload: { category: 'Простая' } })).statusCode).toBe(200);
+  expect((await weigh(10_001)).json().code).toBe('OVERWEIGHT');
+  expect(getState().containers[container.id].status).toBe('open');
+  expect((await weigh(10_000)).json()).toMatchObject({
+    status: 'closed', totalWeightGrams: 10_000, measuredWeightGrams: 10_000, weightEvidence: { source: 'manual' },
+  });
+  const reopened = await app.inject({ method: 'POST', url: url + '/reopen' });
+  expect(reopened.json().totalWeightGrams).toBe(container.totalWeightGrams);
+  expect(reopened.json().measuredWeightGrams).toBeUndefined();
+});
+
+test('весы отклоняют нестабильное показание и перегруз, принятый вес и время попадают на ярлык', async () => {
+  getState().shipments[barcode].weightGrams = 9_500;
+  const container = await assign(barcode);
+  const url = '/api/containers/' + container.id;
+  await app.inject({ method: 'PATCH', url, payload: { category: 'Простая' } });
+  const settings = (scaleMode: string, scaleErrorGrams: number) => app.inject({
+    method: 'POST', url: '/api/demo/toggle-error', payload: { scaleMode, scaleErrorGrams },
+  });
+  const read = async () => (await app.inject({ method: 'GET', url: '/api/scale/reading?containerId=' + container.id })).json();
+  const close = (reading: { ts: string; grams: number }) => app.inject({
+    method: 'POST', url: url + '/close',
+    payload: { weightSource: 'scale', readingTs: reading.ts, measuredWeightGrams: reading.grams, openNext: true },
+  });
+  await settings('unstable', 0);
+  expect((await close(await read())).json().code).toBe('INVALID_SCALE_READING');
+  await settings('stable', 1);
+  expect((await close(await read())).json().code).toBe('OVERWEIGHT');
+  expect(getState().containers[container.id].status).toBe('open');
+  await settings('stable', 0);
+  const reading = await read();
+  const result = await close(reading);
+  expect(result.json()).toMatchObject({ totalWeightGrams: 10_000, weightEvidence: { source: 'scale', at: reading.ts } });
+  expect(getState().containers[result.json().nextContainerId].status).toBe('open');
+  const label = await app.inject({ method: 'GET', url: url + '/label' });
+  expect(label.json().weightEvidence).toEqual({ source: 'scale', at: reading.ts });
 });
 
 test('почтовые карточки и бандероль-комплект относятся к группам из справочника', () => {
@@ -465,10 +611,10 @@ test('перенос меняет обе ёмкости целиком и отк
   expect(state.shipments[barcode]).toMatchObject({ status: 'placed', containerId: to.id });
   expect((await transfer(from.id)).json().errorCode).toBe('CONTAINER_CHANGED');
   expect((await targets(to.id)).json().items.map((item: { id: string }) => item.id)).toEqual([from.id]);
-  state.containers[from.id].maxWeightGrams = from.tareWeightGrams;
+  state.containers[from.id].massLimitOverrideGrams = from.tareWeightGrams;
   expect((await transfer(to.id, from.id)).json().errorCode).toBe('TARGET_UNAVAILABLE');
   expect(state.containers[to.id].shipmentIds).toEqual([barcode]);
-  state.containers[from.id].maxWeightGrams = from.maxWeightGrams;
+  delete state.containers[from.id].massLimitOverrideGrams;
   expect((await transfer(to.id, from.id)).statusCode).toBe(200);
   expect(state.audit[0]).toMatchObject({ action: 'transferred', newValue: { containerId: from.id } });
 });

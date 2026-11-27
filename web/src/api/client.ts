@@ -38,6 +38,14 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 }
 
 export const api = {
+  packagingReference: () => request<{
+    packaging: typeof import('../../../server/src/reference/packaging').packaging;
+    shipmentMarkLabels: typeof import('../../../server/src/reference/marks').shipmentMarkLabels;
+    weighingCategories: Container['category'][];
+    containerCategories: Container['category'][];
+    unlimitedMassGrams: number;
+    maxDemoErrorGrams: number;
+  }>('/reference/packaging'),
   trips: () => request<{ items: DispatchTrip[] }>('/trips'),
   tripPlan: () => request<TripPlan>('/trip-plan'),
   planShipment: (barcode: string, included: boolean) => request<TripPlan>(`/trip-plan/${encodeURIComponent(barcode)}`, {
@@ -82,7 +90,19 @@ export const api = {
     return request<{ total: number; items: any[] }>(`/containers${q}`);
   },
   getContainer: (id: string) => request<any>(`/containers/${id}`),
-  closeContainer: (id: string) => request<any>(`/containers/${id}/close`, { method: 'POST' }),
+  scaleReading: (id: string) => request<import('../../../server/src/types/index').ScaleReading>(
+    `/scale/reading?containerId=${encodeURIComponent(id)}`),
+  closeContainer: (id: string, measuredWeightGrams?: number, options?: {
+    weightSource?: import('../../../server/src/types/index').WeightSource; readingTs?: string; openNext?: boolean;
+  }) => request<Container & { nextContainerId?: string }>(`/containers/${id}/close`, {
+    method: 'POST', body: measuredWeightGrams === undefined && !options ? undefined : JSON.stringify({ measuredWeightGrams, ...options }),
+  }),
+  createContainer: (body: Pick<Container, 'kind' | 'category' | 'directionId' | 'waybillDirectionId'>) =>
+    request<Container>('/containers', { method: 'POST', body: JSON.stringify(body) }),
+  nestingParents: (id: string) => request<{ items: Container[] }>(`/containers/${id}/nest-parents`),
+  changeNestedContainer: (id: string, childId: string, attach: boolean) => request<Container>(`/containers/${id}/${attach ? 'nest' : 'unnest'}`, {
+    method: 'POST', body: JSON.stringify({ childId }),
+  }),
   reopenContainer: (id: string) => request<any>(`/containers/${id}/reopen`, { method: 'POST' }),
   patchContainer: (id: string, body: Record<string, unknown>) =>
     request<any>(`/containers/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
@@ -113,7 +133,8 @@ export const api = {
   search: (filters: { q: string; date: string; direction: string }) =>
     request<any>(`/search?${new URLSearchParams(Object.entries(filters).filter(([, value]) => value))}`),
   demoFlags: () => request<any>('/demo/flags'),
-  toggleError: (body: { printerError?: boolean; sourceDown?: boolean }) =>
+  toggleError: (body: { printerError?: boolean; sourceDown?: boolean; autoNestBags?: boolean;
+    scaleMode?: import('../../../server/src/types/index').ScaleMode; scaleErrorGrams?: number | null }) =>
     request<any>('/demo/toggle-error', { method: 'POST', body: JSON.stringify(body) }),
   reset: () => request<any>('/demo/reset', { method: 'POST' }),
   audit: (entityId?: string) =>

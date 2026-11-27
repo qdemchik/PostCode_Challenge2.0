@@ -5,6 +5,7 @@ import type { DispatchSummary, Waybill } from '../types/index.js';
 import { isEligibleForDispatch } from '../services/routing.js';
 import { requestTripId } from './trips.js';
 import { describeTripPlan } from '../services/tripPlan.js';
+import { containerShipments } from '../services/assignment.js';
 
 export async function waybillRoutes(app: FastifyInstance) {
   app.get('/api/dispatch-summary', async (req): Promise<DispatchSummary> => {
@@ -12,7 +13,8 @@ export async function waybillRoutes(app: FastifyInstance) {
     const tripId = requestTripId(req);
     const waybills = Object.values(state.waybills).filter((waybill) => waybill.tripId === tripId);
     const documented = new Set(waybills.filter((waybill) => waybill.status !== 'cancelled').flatMap((waybill) => waybill.containerIds));
-    const containers = Object.values(state.containers).filter((container) => container.tripId === tripId && container.shipmentIds.length);
+    const containers = Object.values(state.containers).filter((container) => container.tripId === tripId &&
+      !container.parentContainerId && (container.shipmentIds.length || container.childContainerIds?.length));
     const closed = containers.filter((container) => container.status === 'closed');
     const reviewCounts: DispatchSummary['reviewCounts'] = {};
     const underReview = new Set<string>();
@@ -128,7 +130,9 @@ export async function waybillRoutes(app: FastifyInstance) {
         const documented = new Set(Object.values(state.waybills)
           .filter((item) => item.tripId === waybill.tripId && item.status !== 'cancelled')
           .flatMap((item) => item.containerIds));
-        const outstandingBarcodes = plan.items.filter((item) => !item.containerId || !documented.has(item.containerId))
+        const packedBarcodes = new Set([...documented].flatMap((id) =>
+          state.containers[id] ? containerShipments(state.containers[id]).map((shipment) => shipment.barcode) : []));
+        const outstandingBarcodes = plan.items.filter((item) => !packedBarcodes.has(item.barcode))
           .map((item) => item.barcode);
         if (outstandingBarcodes.length || plan.outsidePlanBarcodes.length) {
           return reply.code(409).send({
@@ -158,7 +162,7 @@ export async function waybillRoutes(app: FastifyInstance) {
     )) {
       return reply.code(400).send({ code: 'INVALID_CONTAINER_IDS', message: 'Выберите ёмкости для накладной.' });
     }
-    const closed = Object.values(state.containers).filter((c) => c.tripId === tripId && c.status === 'closed');
+    const closed = Object.values(state.containers).filter((c) => c.tripId === tripId && c.status === 'closed' && !c.parentContainerId);
     if (closed.length === 0 && requested === undefined) {
       return {
         ok: false,
@@ -184,18 +188,20 @@ export async function waybillRoutes(app: FastifyInstance) {
 
     const directionIds = [...new Set(list.map((c) => c.waybillDirectionId || c.directionId))].sort();
     const id = makeDocumentId('114000', [...Object.keys(state.containers), ...Object.keys(state.waybills)]);
+    const containerShipmentCounts = Object.fromEntries(list.map((c) => [c.id, containerShipments(c).length]));
     const waybill: Waybill = {
       id,
       tripId,
       directionId: directionIds[0],
       directionIds,
       containerIds: list.map((c) => c.id),
+      containerShipmentCounts,
       replacesWaybillIds: history.filter((w) => w.status === 'cancelled' && w.containerIds.some((id) => selected.includes(id))).map((w) => w.id),
       status: 'formed',
       createdAt: new Date().toISOString(),
       opsIndex: '114000',
       totalContainers: list.length,
-      totalShipments: list.reduce((sum, c) => sum + c.shipmentIds.length, 0),
+      totalShipments: Object.values(containerShipmentCounts).reduce((sum, count) => sum + count, 0),
       totalWeightGrams: list.reduce((sum, c) => sum + c.totalWeightGrams, 0),
     };
     state.waybills[id] = waybill;

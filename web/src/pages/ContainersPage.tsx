@@ -1,16 +1,14 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import type { Container, Shipment } from '../../../server/src/types/index';
+import type { Container, ScaleReading, Shipment, WeightSource } from '../../../server/src/types/index';
 import { api } from '../api/client';
 import { useSession } from '../stores/session';
 import { printEvidenceLabel } from '../printEvidence';
 
-type ContainerDetail = Container & { shipments: Shipment[]; waybillId?: string };
+type ContainerDetail = Container & { shipments: Shipment[]; children: Container[]; waybillId?: string;
+  outerCategory?: Container['category']; acceptsChildContainers?: boolean };
 
-const kinds: Container['kind'][] = ['группа РПО', 'контейнер', 'мешок', 'ящик', 'коробка', 'паллета', 'мешок М', 'газетная пачка'];
-const categories: Container['category'][] = ['Заказная', 'Страховая', 'EMS', 'Сборная', 'Простая', 'С ТМЦ', 'С порожней тарой', 'С печатью', 'Со счетами и ДМ'];
 const fields = [
-  ['packagingModel', 'Модель тары'],
   ['packagingNumber', 'Номер тары'],
   ['sealNumber', 'Номер пломбы'],
   ['tareWeightGrams', 'Масса пустой тары, г'],
@@ -26,10 +24,28 @@ export default function ContainersPage() {
   const [detail, setDetail] = useState<ContainerDetail | null>(null);
   const [busy, setBusy] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [editKind, setEditKind] = useState<Container['kind']>('мешок');
+  const [editModel, setEditModel] = useState('');
+  const [manualTare, setManualTare] = useState(false);
+  const [reference, setReference] = useState<Awaited<ReturnType<typeof api.packagingReference>>>();
+  const packaging = reference?.packaging;
+  const kinds = Object.keys(packaging ?? {}) as Container['kind'][];
+  const categories = reference?.containerCategories ?? [];
+  const modelTare = packaging?.[editKind].models.find((model) => model.name === editModel)?.tareGrams;
+  useEffect(() => { void api.packagingReference().then(setReference).catch(() => {
+    setActionError('Не удалось загрузить справочник тары. Обновите страницу.');
+  }); }, []);
   const [removing, setRemoving] = useState<string | null>(null);
   const [targets, setTargets] = useState<Container[] | null>(null);
   const [target, setTarget] = useState('');
   const [actionError, setActionError] = useState('');
+  const [nestedCode, setNestedCode] = useState('');
+  const [measured, setMeasured] = useState('');
+  const [reading, setReading] = useState<ScaleReading>();
+  const [scaleStatus, setScaleStatus] = useState('');
+  const [weightSource, setWeightSource] = useState<WeightSource>('calculated');
+  const [parents, setParents] = useState<Container[] | null>(null);
+  const [parentChoice, setParentChoice] = useState('');
   const detailRequest = useRef(0);
   const targetRequest = useRef(0);
 
@@ -41,33 +57,95 @@ export default function ContainersPage() {
     const request = ++detailRequest.current;
     try {
       const next = await api.getContainer(id);
-      if (request === detailRequest.current) setDetail(next);
+      if (request === detailRequest.current) {
+        setDetail(next);
+        setNestedCode('');
+        setMeasured('');
+        setReading(undefined);
+        setScaleStatus('');
+        setWeightSource('calculated');
+        setParents(null);
+        setParentChoice('');
+      }
     } catch (e: any) {
       if (request === detailRequest.current) showToast({ type: 'error', title: 'Ошибка', message: e.message });
     }
   };
 
+  const chooseParent = async () => {
+    if (!detail) return;
+    setBusy(true);
+    setActionError('');
+    try {
+      setParents((await api.nestingParents(detail.id)).items);
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : 'Обновите карточку и повторите поиск внешней ёмкости.');
+    } finally { setBusy(false); }
+  };
+
+  const createOuter = async () => {
+    if (!detail || busy || !outerCategory) return;
+    setBusy(true);
+    setActionError('');
+    try {
+      const { directionId, waybillDirectionId } = detail;
+      const outer = await api.createContainer({ kind: 'контейнер', category: outerCategory, directionId, waybillDirectionId });
+      await Promise.all([refresh(), loadDetail(outer.id)]);
+      setNestedCode(detail.id);
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : 'Не удалось создать внешнюю ёмкость.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const outerCategory = detail?.outerCategory;
+
   useEffect(() => {
     if (requestedId) void loadDetail(requestedId);
   }, [requestedId]);
 
-  const update = async (action: () => Promise<unknown>, title: string) => {
+  const update = async <T,>(action: () => Promise<T>, title: string, nextId?: (result: T) => string | undefined) => {
     if (!detail || busy) return;
     ++detailRequest.current;
     setBusy(true);
     setActionError('');
     try {
-      await action();
+      const result = await action();
       setEditing(false);
       setRemoving(null);
       ++targetRequest.current;
       showToast({ type: 'success', title });
-      await Promise.all([refresh(), loadDetail(detail.id)]);
+      await Promise.all([refresh(), loadDetail(nextId?.(result) ?? detail.id)]);
     } catch (e: any) {
       setActionError(e.body?.errorMessage || e.message);
     } finally {
       setBusy(false);
     }
+  };
+
+  const weigh = async () => {
+    if (!detail || busy) return;
+    setBusy(true);
+    setReading(undefined);
+    setMeasured('');
+    setWeightSource('calculated');
+    setScaleStatus('Получение показания…');
+    try {
+      const value = await api.scaleReading(detail.id);
+      setReading(value);
+      setScaleStatus(value.stable ? 'Вес стабилен.' : 'Вес нестабилен. Дождитесь стабилизации и перевзвесьте.');
+    } catch (error) {
+      setScaleStatus(error instanceof Error ? error.message : 'Показание недоступно. Повторите или введите массу вручную.');
+    } finally { setBusy(false); }
+  };
+
+  const overweightReading = !!(detail && reading?.stable && reading.grams > detail.maxWeightGrams);
+  const close = (openNext = false) => {
+    if (!detail || overweightReading) return;
+    void update(() => api.closeContainer(detail.id, measured ? Number(measured) : undefined, {
+      weightSource, readingTs: weightSource === 'scale' ? reading?.ts : undefined, openNext,
+    }), openNext ? 'Следующая ёмкость открыта' : 'Ёмкость закрыта', (result) => result.nextContainerId);
   };
 
   const save = (event: FormEvent<HTMLFormElement>) => {
@@ -76,8 +154,10 @@ export default function ContainersPage() {
     const form = new FormData(event.currentTarget);
     const values: Record<string, string | number> = {};
     for (const [key, value] of form.entries()) {
-      values[key] = key === 'tareWeightGrams' || key === 'maxWeightGrams' ? Number(value) : String(value);
+      const next = key === 'tareWeightGrams' || key === 'maxWeightGrams' ? Number(value) : String(value);
+      if (next !== detail[key as keyof Container]) values[key] = next;
     }
+    values.tareSource = manualTare ? 'manual' : 'reference';
     void update(() => api.patchContainer(detail.id, values), 'Реквизиты сохранены');
   };
 
@@ -170,12 +250,15 @@ export default function ContainersPage() {
               <div className="muted">Тара № {detail.packagingNumber || '—'} · Пломба № {detail.sealNumber || '—'}</div>
               {detail.labelPrinted && <div>{printEvidenceLabel(detail.labelPrintEvidence, true)}</div>}
               {detail.waybillId && <div>Включена в накладную {detail.waybillId}</div>}
+              {detail.parentContainerId && <button className="btn btn-ghost" onClick={() => void loadDetail(detail.parentContainerId!)}>
+                Внешняя ёмкость {detail.parentContainerId}
+              </button>}
               <div className="muted">
                 Направление {detail.directionId} · накладная {detail.waybillDirectionId}
               </div>
               <div>
                 Масса: {detail.totalWeightGrams} г (тара {detail.tareWeightGrams}) / макс.{' '}
-                {detail.maxWeightGrams} г
+                {detail.maxWeightGrams === reference?.unlimitedMassGrams ? 'без ограничения' : detail.maxWeightGrams + ' г'}
               </div>
               <div>
                 Отметки:{' '}
@@ -186,12 +269,28 @@ export default function ContainersPage() {
                 ))}
               </div>
               {actionError && <p role="alert">{actionError}</p>}
-              {editing ? (
+              {detail.weightEvidence && <p>Источник массы: {detail.weightEvidence.source === 'scale' ? 'весы'
+                : detail.weightEvidence.source === 'manual' ? 'введена вручную' : 'расчётная'}.</p>}
+              {editing && packaging ? (
                 <form className="stack" onSubmit={save}>
                   <div className="review-fields">
                     <label>Вид ёмкости
-                      <select name="kind" defaultValue={detail.kind}>
+                      <select name="kind" value={editKind} onChange={(event) => {
+                        const kind = event.target.value as Container['kind'];
+                        setEditKind(kind);
+                        setEditModel(packaging[kind].models[0].name);
+                        setManualTare(false);
+                      }}>
                         {kinds.map((kind) => <option key={kind}>{kind}</option>)}
+                      </select>
+                    </label>
+                    <label>Модель тары
+                      <select name="packagingModel" value={editModel} onChange={(event) => {
+                        setEditModel(event.target.value);
+                        setManualTare(false);
+                      }}>
+                        {packaging[editKind].models.filter((item) => item.available !== false || item.name === editModel)
+                          .map((item) => <option key={item.name}>{item.name}</option>)}
                       </select>
                     </label>
                     <label>Вид вложения
@@ -203,9 +302,16 @@ export default function ContainersPage() {
                       const numeric = name === 'tareWeightGrams' || name === 'maxWeightGrams';
                       return (
                         <label key={name}>{label}
-                          <input name={name} type={numeric ? 'number' : 'text'} defaultValue={detail[name] ?? ''}
+                          <input key={name === 'tareWeightGrams' ? editKind + editModel : name}
+                            name={name} type={numeric ? 'number' : 'text'} readOnly={name === 'tareWeightGrams' && !manualTare} defaultValue={
+                              name === 'tareWeightGrams' && (editKind !== detail.kind || editModel !== detail.packagingModel)
+                                ? modelTare
+                                : detail[name] ?? ''
+                            }
                             min={numeric ? Number(name === 'maxWeightGrams') : undefined}
-                            required={numeric || name === 'packagingModel'} />
+                            required={numeric} />
+                          {name === 'tareWeightGrams' && <button type="button" className="btn btn-ghost"
+                            onClick={() => setManualTare(true)}>{manualTare ? 'Вручную' : 'Изменить вручную'}</button>}
                         </label>
                       );
                     })}
@@ -222,26 +328,120 @@ export default function ContainersPage() {
               <div className="flex">
                 {detail.status === 'open' && !detail.waybillId && (
                   <>
-                  <button className="btn btn-ghost" disabled={busy || !!removing} onClick={() => {
+                  <button className="btn btn-ghost" disabled={busy || !!removing || !packaging} onClick={() => {
+                    if (!packaging) return;
                     setActionError('');
+                    setEditKind(detail.kind);
+                    setEditModel(packaging[detail.kind].models.find((model) => model.name === detail.packagingModel)?.name ??
+                      packaging[detail.kind].models[0].name);
+                    setManualTare(detail.tareSource === 'manual');
                     setEditing(true);
                   }}>Изменить реквизиты</button>
-                  <button className="btn btn-primary" disabled={busy || !!removing || !detail.shipments.length}
-                    onClick={() => update(() => api.closeContainer(detail.id), 'Ёмкость закрыта')}>
+                  <button className="btn btn-primary" disabled={busy || !!removing ||
+                    overweightReading ||
+                    (!detail.shipments.length && !detail.children.length) ||
+                    (!!measured && (!Number.isSafeInteger(Number(measured)) || Number(measured) <= 0))}
+                    onClick={() => close()}>
                     Закрыть ёмкость
                   </button>
                   </>
                 )}
-                {detail.status === 'closed' && !detail.waybillId && (
+                {detail.status === 'closed' && !detail.waybillId && !detail.parentContainerId && (
                   <button className="btn btn-ghost" disabled={busy} onClick={() =>
                     update(() => api.reopenContainer(detail.id), 'Ёмкость открыта')}>
                     Открыть снова
                   </button>
                 )}
+                {detail.status === 'closed' && !detail.waybillId && !detail.parentContainerId && outerCategory && (
+                  <button className="btn btn-ghost" disabled={busy} onClick={() => void createOuter()}>Создать внешний контейнер</button>
+                )}
+                {detail.status === 'closed' && !detail.waybillId && !detail.parentContainerId && (
+                  <button className="btn btn-ghost" disabled={busy} onClick={() => void chooseParent()}>Вложить в ёмкость…</button>
+                )}
                 {detail.status === 'closed' && (
                   <Link className="btn btn-ghost" to={`/print/label/${detail.id}`}>Открыть ярлык</Link>
                 )}
               </div>
+              )}
+              {parents && (parents.length ? (
+                <form className="review-fields" onSubmit={(event) => {
+                  event.preventDefault();
+                  if (parentChoice) void update(() => api.changeNestedContainer(parentChoice, detail.id, true), 'Ёмкость вложена');
+                }}>
+                  <label>Допустимая внешняя ёмкость
+                    <select value={parentChoice} disabled={busy} onChange={(event) => setParentChoice(event.target.value)}>
+                      <option value="">Выберите ёмкость</option>
+                      {parents.map((parent) => <option key={parent.id} value={parent.id}>{parent.id} · {parent.kind}</option>)}
+                    </select>
+                  </label>
+                  <div><button className="btn btn-primary" disabled={busy || !parentChoice}>Подтвердить вложение</button></div>
+                </form>
+              ) : <p role="status">Подходящих открытых ёмкостей нет. Создайте внешнюю ёмкость или проверьте её категорию и направление.</p>)}
+              {detail.status === 'open' && !editing && !removing && reference?.weighingCategories.includes(detail.category) && (
+                <div className="stack" onKeyDown={(event) => {
+                  if (event.key === 'F6') { event.preventDefault(); void weigh(); }
+                }}>
+                <div className="review-fields">
+                  <label>Масса ёмкости с вложениями, г
+                    <input type="number" min={Math.max(1, detail.tareWeightGrams)} value={measured} disabled={busy}
+                      placeholder={String(detail.totalWeightGrams)}
+                      onChange={(event) => {
+                        setMeasured(event.target.value);
+                        setWeightSource(event.target.value ? 'manual' : 'calculated');
+                      }} />
+                  </label>
+                  <div><button className="btn btn-ghost" disabled={busy}
+                    onClick={() => void weigh()}>{reading ? 'Перевзвесить' : 'Взвесить'} · F6</button></div>
+                </div>
+                {!!scaleStatus && <p role="status">{scaleStatus}</p>}
+                {reading && <>
+                  <p>По весам: {reading.grams} г · Расчёт: {reading.calculatedGrams} г · Разница: {reading.grams - reading.calculatedGrams} г</p>
+                  {Math.abs(reading.grams - reading.calculatedGrams) > reading.toleranceGrams &&
+                    <p role="status">Расхождение выше допуска {reading.toleranceGrams.toLocaleString('ru-RU')} г. Проверьте состав и выберите источник.</p>}
+                  <div className="flex">
+                    <button className="btn btn-ghost" disabled={busy || !reading.stable || overweightReading} onClick={() => {
+                      setMeasured(String(reading.grams)); setWeightSource('scale');
+                    }}>Принять вес с весов</button>
+                    <button className="btn btn-ghost" disabled={busy || overweightReading} onClick={() => {
+                      setMeasured(''); setWeightSource('calculated');
+                    }}>Оставить расчётный</button>
+                  </div>
+                </>}
+                {overweightReading && <p role="alert">Превышена максимально допустимая масса ёмкости. Перенесите часть вложений и перевзвесьте.</p>}
+                <div className="flex">
+                  <button className="btn btn-ghost" disabled={busy || overweightReading || (!detail.shipments.length && !detail.children.length)}
+                    onClick={() => close(true)}>Закрыть и открыть следующую</button>
+                  {detail.shipments[0] && <button className="btn btn-ghost" disabled={busy}
+                    onClick={() => void chooseShipment(detail.shipments[0], detail.id)}>Перенести отправление</button>}
+                </div>
+                </div>
+              )}
+              {detail.status === 'open' && !editing && !removing && detail.acceptsChildContainers && (
+                <form className="review-fields" onSubmit={(event) => {
+                  event.preventDefault();
+                  if (nestedCode.trim()) void update(() => api.changeNestedContainer(detail.id, nestedCode.trim(), true), 'Ёмкость вложена');
+                }}>
+                  <label>ШИ вложенной ёмкости
+                    <input value={nestedCode} onChange={(event) => setNestedCode(event.target.value)} disabled={busy} />
+                  </label>
+                  <div><button className="btn btn-ghost" disabled={busy || !nestedCode.trim()}>Вложить ёмкость</button></div>
+                </form>
+              )}
+              {!!detail.children.length && (
+                <div className="stack">
+                  <strong>Вложенные ёмкости · {detail.children.length}</strong>
+                  {detail.children.map((child) => (
+                    <div className="flex" key={child.id}>
+                      <button className="btn btn-ghost mono" disabled={busy || editing || !!removing}
+                        onClick={() => void loadDetail(child.id)}>{child.id}</button>
+                      <span>{child.kind} · {child.totalWeightGrams} г</span>
+                      {detail.status === 'open' && !editing && !removing && (
+                        <button className="btn btn-ghost" disabled={busy} onClick={() =>
+                          void update(() => api.changeNestedContainer(detail.id, child.id, false), 'Вложенная ёмкость извлечена')}>Извлечь ёмкость</button>
+                      )}
+                    </div>
+                  ))}
+                </div>
               )}
               {removing && (
                 <div className="stack">

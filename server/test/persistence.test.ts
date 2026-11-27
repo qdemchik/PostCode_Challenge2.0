@@ -43,6 +43,19 @@ const assign = () => app.inject({
   method: 'POST', url: '/api/containers/assign', payload: { barcode },
 });
 
+test('старый текст модели нормализуется с сохранением ручной массы тары', async () => {
+  const placed = (await assign()).json();
+  const container = getState().containers[placed.container.id];
+  container.packagingModel = 'нестандартное старое название';
+  container.tareWeightGrams = 550;
+  delete container.tareSource;
+  persistSession();
+  expect(restoreSession()).toBe(true);
+  expect(getState().containers[container.id]).toMatchObject({
+    packagingModel: 'Брезентовый', tareWeightGrams: 550, tareSource: 'manual',
+  });
+});
+
 test('рейс и привязка ёмкости восстанавливаются из сессии', async () => {
   const created = await app.inject({ method: 'POST', url: '/api/trips', payload: { name: 'Утренний' } });
   expect(created.statusCode).toBe(201);
