@@ -2,7 +2,7 @@ import { mkdtempSync, readFileSync, renameSync, rmdirSync, unlinkSync, writeFile
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import Fastify from 'fastify';
-import { afterEach, beforeEach, expect, test } from 'vitest';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { containerRoutes } from '../src/routes/containers.js';
 import { demoRoutes } from '../src/routes/demo.js';
 import { printRoutes } from '../src/routes/print.js';
@@ -143,14 +143,17 @@ test('ошибка записи откатывает операцию, посл�
   const before = readFileSync(path, 'utf8');
   renameSync(directory, moved);
   writeFileSync(directory, 'Путь к каталогу временно недоступен');
+  const log = vi.spyOn(console, 'error').mockImplementation(() => {});
   try {
     const result = await assign();
+    expect(log).toHaveBeenCalledWith('[store] Session save failed', expect.objectContaining({ code: 'EEXIST' }));
     expect(result.statusCode).toBe(503);
     expect(result.json().code).toBe('SESSION_SAVE_FAILED');
     expect(getState().shipments[barcode].containerId).toBeUndefined();
     expect(getState().containers).toEqual({});
     expect(readFileSync(join(moved, 'session.json'), 'utf8')).toBe(before);
   } finally {
+    log.mockRestore();
     unlinkSync(directory);
     renameSync(moved, directory);
   }

@@ -11,6 +11,7 @@
     "start": "npm run start -w server",
     "test": "npm run test -w server && npm run test -w web",
     "test:browser": "node scripts/browser-smoke.mjs",
+    "test:cross-browser": "node scripts/browser-smoke.mjs --cross-browser",
     "import-data": "tsx data/import.ts"
   },
   "workspaces": [
@@ -19,6 +20,7 @@
   ],
   "devDependencies": {
     "concurrently": "^9.1.0",
+    "playwright": "^1.65.1",
     "tsx": "^4.19.2"
   }
 }

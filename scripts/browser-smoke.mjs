@@ -1,3 +1,4 @@
+import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {createServer} from 'node:http';
 import {readFileSync, writeFileSync, mkdtempSync, rmSync} from 'node:fs';
@@ -40,9 +41,41 @@ async function wait(action, label){
  const end=Date.now()+8500; let last; while(Date.now()<end){try{const result=await action();if(result)return result;}catch(e){last=e;} await delay(8);} if(last)console.error(last.message);
  throw Error('Timed out: '+label);
 }
+async function checkBrowserEngines() {
+ const { firefox, webkit } = await import('playwright');
+ for (const [name, engine] of Object.entries({ firefox, webkit })) {
+  const browser = await engine.launch();
+  try {
+   const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+   const pageErrors = [];
+   page.on('pageerror', (error) => pageErrors.push(error.message));
+   await page.goto(base);
+   await page.getByRole('heading', { name: 'Исходящая почта сегодня' }).waitFor();
+   await page.getByRole('link', { name: 'Начать сборку' }).click();
+   await page.locator('#scan').fill('IN261116000001');
+   await page.getByRole('button', { name: 'Найти отправление' }).click();
+   await page.getByRole('heading', { name: 'Проверка отправления' }).waitFor();
+   assert.equal(await page.locator('input[name=mark-careful]').count(), 1);
+   await page.setViewportSize({ width: 390, height: 844 });
+   for (const path of ['/scan', '/containers', '/finish', '/print']) {
+    await page.goto(base + path);
+    await page.locator('.trip-picker').waitFor();
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), name + ' overflow on ' + path);
+   }
+   assert.deepEqual(pageErrors, []);
+   console.log(name + ': dashboard, shipment lookup, marks and four mobile routes verified');
+  } finally {
+   await browser.close();
+  }
+ }
+}
+
 try{
  await new Promise(done=>http.listen(port,'127.0.0.1',done));
  await wait(async()=>(await fetch(base+'/api/health')).ok,'API');
+ if (process.argv.includes('--cross-browser')) {
+  await checkBrowserEngines();
+ } else {
  edge=spawn(process.env.BROWSER_PATH ?? 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',[
   '--headless=new','--window-size=1440,1000','--disable-gpu','--no-first-run','--no-default-browser-check',
   '--user-data-dir='+join(dir,'edge'),'--remote-debugging-port='+debugPort,'about:blank'
@@ -201,7 +234,7 @@ try{
  const tripSelector = '.trip-picker [data-trip-id][aria-pressed="true"]';
  const inputValue = (selector, value) => evaluate(`(() => {
    const input = document.querySelector(${JSON.stringify(selector)});
-   Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, ${JSON.stringify(value)});
+   Object.getOwnPropertyDescriptor(Object.getPrototypeOf(input), 'value').set.call(input, ${JSON.stringify(value)});
    input.dispatchEvent(new Event('input', { bubbles: true }));
  })()`);
  const chooseTrip = (id) => evaluate(`(() => {
@@ -337,6 +370,56 @@ try{
   item.totalContainers === 1 && item.totalShipments === 1 && !item.containerIds.includes(firstShipment.containerId)
  ), 'waybill counts the outer container only');
  console.log('Demo weighing, container nesting and document quantities verified');
+ const resetForSeries = await fetch(base + '/api/demo/reset', { method: 'POST' });
+ assert.ok(resetForSeries.ok, 'reset isolated demo session for series');
+ await cdp('Page.navigate', { url: base + '/scan?series=1' });
+ await wait(() => evaluate('Boolean(document.querySelector("textarea"))'), 'scanner series form');
+ await inputValue('textarea', 'IN261116000001\nIN261116000002\nIN999999999999\nIN261116000003');
+ await click(button('button', 'Отсканировать серию'), 'run scanner series');
+ await wait(() => evaluate('document.body.textContent.includes("Вложено: 2 из 4")'), 'series stops at unknown identifier');
+ const assignmentOf = async (barcode) => (await (await fetch(base + '/api/shipments/' + barcode)).json()).containerId;
+ assert.ok(await assignmentOf('IN261116000001'));
+ assert.ok(await assignmentOf('IN261116000002'));
+ assert.ok(!await assignmentOf('IN261116000003'));
+ await click(button('button', 'Отменить вложение'), 'undo last scanned placement');
+ await wait(async () => !await assignmentOf('IN261116000002'), 'last placement undone');
+ assert.ok(await assignmentOf('IN261116000001'));
+ console.log('Scanner series stops at first exception and undo preserves earlier placements');
+ await navigate('/demo');
+ await click(button('a', 'Начать демо-тур'), 'start demo tour');
+ await wait(() => evaluate('document.querySelector(".demo-tour")?.textContent.includes("Шаг 1 из 6")'), 'tour first step');
+ await click(button('a', 'Далее'), 'tour to scanner');
+ await wait(() => evaluate('document.querySelector(".demo-tour")?.textContent.includes("Шаг 2 из 6") && !!document.querySelector("textarea")'), 'tour scanner step');
+ await navigate('/scan');
+ await wait(() => evaluate('Boolean(document.querySelector("#scan"))'), 'scan for offline queue');
+ await evaluate(`(() => {
+  Object.defineProperty(navigator, 'onLine', { configurable: true, value: false });
+  window.dispatchEvent(new Event('offline'));
+  [...document.querySelectorAll('label')].find((item) => item.textContent.includes('Только исключения')).querySelector('input').click();
+ })()`);
+ await inputValue('#scan', 'IN261116000002');
+ await click(button('button', 'Найти отправление'), 'queue one offline scan');
+ await wait(() => evaluate('document.body.textContent.includes("Нет связи · 1 ШПИ")'), 'one queued scan');
+ assert.ok(!await assignmentOf('IN261116000002'));
+ await evaluate(`(() => {
+  delete navigator.onLine;
+  window.dispatchEvent(new Event('online'));
+ })()`);
+ await wait(async () => Boolean(await assignmentOf('IN261116000002')), 'queued scan replayed');
+ await wait(() => evaluate('document.body.textContent.includes("Очередь отправлена.")'), 'queue fully sent');
+
+ await createTrip('Плановый вывоз');
+ await click(button('a', 'План рейса'), 'open departure plan');
+ await inputValue('input[type=datetime-local]', await evaluate(`(() => {
+  const future = new Date(Date.now() + 40 * 60000);
+  return new Date(future.getTime() - future.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+ })()`));
+ await inputValue('#plan-code', 'IN261116000003');
+ await click(button('button', 'Включить в план'), 'plan shipment for departure');
+ await wait(() => evaluate('Boolean(document.querySelector(".departure-warning"))'), 'departure warning on plan');
+ await navigate('/finish');
+ await wait(() => evaluate('document.querySelector(".departure-warning")?.textContent.includes("Не вложено по плану: 1")'), 'departure warning on finish');
+ console.log('Tour, departure warning and offline scan replay verified');
  if (process.argv.includes('--export-preview')) {
   await navigate('/');
   await createTrip('почта');
@@ -388,6 +471,7 @@ try{
    await wait(async () => (await evaluate(metrics)) === expected, 'trip panel fixed on ' + path);
   }
   console.log('Offline trip panel matches live button labels, selection and geometry');
+ }
  }
 }finally{
  ws?.close();edge?.kill();child.kill();http.close();

@@ -194,7 +194,8 @@
 }
 
 .review-fields input,
-.review-fields select {
+.review-fields select,
+.review-fields textarea {
   width: 100%;
   min-height: 44px;
   padding: 8px 12px;
@@ -636,3 +637,6 @@
     max-width: none;
   }
 }
+
+.demo-tour { margin-bottom: var(--space-4); }
+.departure-warning { color: var(--warning); }

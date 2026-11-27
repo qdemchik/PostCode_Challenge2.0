@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import TripDeparture from '../TripDeparture';
 import { Link } from 'react-router-dom';
 import type { TripPlan } from '../../../server/src/types/index';
 import { api, currentTripId } from '../api/client';
@@ -49,6 +50,7 @@ export default function TripPlanPage() {
         <Link className="btn btn-ghost" to="/finish">Сводка рейса</Link>
       </div>
       {!tripId && <p role="status">Выберите или создайте рабочий рейс в панели выше.</p>}
+      {tripId && <TripDeparture tripId={tripId} editable remaining={plan?.items.filter((item) => item.status !== 'packed').length} />}
       {error && <p role="alert">{error}</p>}
       {tripId && (
         <form className="card stack" onSubmit={(event) => {

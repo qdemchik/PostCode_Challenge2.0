@@ -1,6 +1,7 @@
 import { NavLink, Route, Routes } from 'react-router-dom';
 import { useCallback, useEffect, useState } from 'react';
 import { useSession } from './stores/session';
+import DemoTour from './DemoTour';
 import Dashboard from './pages/Dashboard';
 import ScanPage from './pages/ScanPage';
 import ContainersPage from './pages/ContainersPage';
@@ -77,6 +78,7 @@ export default function App() {
 
       <main className="app-main">
         <TripPicker selected={tripId} onSelect={selectTrip} />
+        <DemoTour />
         <Routes key={tripId}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/scan" element={<ScanPage />} />

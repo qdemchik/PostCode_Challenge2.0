@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { api } from '../api/client';
 import { useSession } from '../stores/session';
@@ -104,6 +105,10 @@ export default function DemoPanel() {
 
       <div className="card" style={{ borderColor: 'var(--warning)' }}>
         <strong>Важно:</strong> все ФИО, адреса и часть реквизитов — синтетические.
+      </div>
+      <div className="flex">
+        <Link className="btn btn-primary" to="/?tour=1">Начать демо-тур</Link>
+        <Link className="btn btn-ghost" to="/scan?series=1">Эмулятор сканера</Link>
       </div>
       <form className="card stack" onSubmit={(event) => {
         event.preventDefault();

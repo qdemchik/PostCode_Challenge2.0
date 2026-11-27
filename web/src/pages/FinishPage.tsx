@@ -1,7 +1,8 @@
+import TripDeparture from '../TripDeparture';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { DispatchSummary, DocumentStatus, ReviewReason, Waybill } from '../../../server/src/types/index';
-import { api } from '../api/client';
+import { api, currentTripId } from '../api/client';
 import { useSession } from '../stores/session';
 import { reviewLabels } from './ReviewPage';
 import { printEvidenceLabel } from '../printEvidence';
@@ -127,6 +128,8 @@ export default function FinishPage() {
       <h1 style={{ margin: 0, fontSize: 22 }}>Завершение · накладные ф.23а</h1>
       <p className="muted">Закройте все ёмкости, сформируйте и напечатайте накладные, отметьте готовность к вывозу.</p>
 
+      {summary?.tripPlan && <TripDeparture tripId={currentTripId()}
+        remaining={summary.tripPlan.items.filter((item) => item.status !== 'packed').length} />}
       <section className="card stack" aria-label="Готовность к вывозу">
         <div className="flex-between">
           <h2 className="card-title">Сводка готовности к вывозу</h2>
